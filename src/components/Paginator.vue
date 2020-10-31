@@ -124,7 +124,7 @@ export default {
       this.pager = pager;
 
       // emit change page event to parent component
-      this.$emit('changePage', pageOfItems, page);
+      this.$emit('changePage', pageOfItems, page, pager.startIndex+1);
     }
   }
 }

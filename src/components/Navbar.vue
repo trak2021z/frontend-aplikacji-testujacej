@@ -9,11 +9,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-            <template>
               <li :class="{'nav-item':this.currentPage !== 'testScenarios', 'nav-item active':this.currentPage === 'testScenarios' }">
                 <router-link class="nav-link" to="/test/scenarios" data-toggle="collapse" data-target=".navbar-collapse.show">Test Scenarios</router-link>
               </li>
-            </template>
+            <li :class="{'nav-item':this.currentPage !== 'doneTests', 'nav-item active':this.currentPage === 'doneTests' }">
+              <router-link class="nav-link" to="/test/done" data-toggle="collapse" data-target=".navbar-collapse.show">Done Tests</router-link>
+            </li>
           </ul>
         </div>
       </nav>
