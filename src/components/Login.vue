@@ -74,7 +74,7 @@ export default {
           this.loginStatus();
           if(this.status === 200){
             this.$v.$reset();
-            router.replace('/main');
+            router.replace('/test/scenarios');
           }
         });
       }

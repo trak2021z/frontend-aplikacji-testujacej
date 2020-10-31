@@ -9,6 +9,8 @@ import { faMoneyCheck } from '@fortawesome/free-solid-svg-icons';
 import { faCoins } from '@fortawesome/free-solid-svg-icons';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
+import { faFolder } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faUserSecret);
 library.add(faSearchPlus);
@@ -18,5 +20,7 @@ library.add(faMoneyCheck);
 library.add(faCoins);
 library.add(faCheck);
 library.add(faTimes);
+library.add(faFolderOpen);
+library.add(faFolder);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
