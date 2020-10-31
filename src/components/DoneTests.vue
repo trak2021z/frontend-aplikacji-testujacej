@@ -31,9 +31,9 @@
               <td>{{ test.start_date }}</td>
               <td>{{ test.end_date }}</td>
               <td>
-                <span style="cursor: pointer">
+                <router-link :to="'/test/done/' + 1">
                   <font-awesome-icon icon="chart-line"/>
-                </span>
+                </router-link>
               </td>
             </tr>
             </tbody>

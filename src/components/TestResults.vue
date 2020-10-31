@@ -17,7 +17,7 @@
 
       <template v-else>
 
-        <br/><h4 class="text-dark">Przypadki zareżenia COVID-19 w Polsce w Październiku 2020</h4>
+        <br/><h4 class="text-dark">Poland cases of COVID-19 in October 2020</h4>
         <line-chart :data="testResults" :download="true" xtitle="Date" ytitle="Cases"></line-chart>
 
         <br/><h4 class="text-dark">Czy cała grupa L2 zasługuje na ocenę 5.0?</h4>
