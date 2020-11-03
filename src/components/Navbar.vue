@@ -9,6 +9,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
+            <li :class="{'nav-item':this.currentPage !== 'generateTest', 'nav-item active':this.currentPage === 'generateTest' }">
+              <router-link class="nav-link" to="/test/generate" data-toggle="collapse" data-target=".navbar-collapse.show">Generate Test</router-link>
+            </li>
             <li :class="{'nav-item':this.currentPage !== 'testScenarios', 'nav-item active':this.currentPage === 'testScenarios' }">
               <router-link class="nav-link" to="/test/scenarios" data-toggle="collapse" data-target=".navbar-collapse.show">Test Scenarios</router-link>
             </li>
