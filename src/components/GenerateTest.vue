@@ -2,6 +2,16 @@
     <div class="main-container">
     <div class="main-table">
       <h2>Generate test</h2>
+
+     <loading :active.sync="isComputing" :is-full-page="false"/>
+      <template v-if="false">
+        <h3 v-if="!isComputing">Oops... something went wrong!</h3>
+      </template>
+
+      <template v-else>
+      <test-progress-modal :is-visible="isTestProgressModalVisible" 
+      :test-pk="this.testPk" :test-users="this.edt_users" :test-amount="this.edt_queries" @hide="closeModal"/>
+
       <form>
         <div class="form-group">
           <div class="row">
@@ -35,22 +45,32 @@
             </div>
           </div><br>
           <div class="row">
-            <input @click="submit" type="button" class="btn btn-success btn-lg btn-block" value="Start Test"/>
+            <input @click="showModal()" type="button" class="btn btn-success btn-lg btn-block" value="Start Test"/>
           </div>
         </div>
       </form>
+
+      </template>
+
     </div>
   </div>
 </template>
 
 <script>
 import {required, numeric, minValue} from "vuelidate/lib/validators";
+import TestProgressModal from "@/components/TestProgressModal";
+
 export default {
+    name: "GenerateTests",
+    components: {TestProgressModal},
     data() {
     return {
+        testPk: 1,
+        isTestProgressModalVisible: false,
         selectedTest : 1,
         edt_users: null,
         edt_queries: null,
+        isComputing: false,
         tests: [
         {
           pk: "1",
@@ -146,13 +166,18 @@ export default {
     }
   },
   methods: {
-    onChange(){
-        console.log('Offer type selected: ', this.selectedOfferType);
+    onChange(){},
+    showModal() {
+        this.$v.$touch();
+        if (this.$v.$invalid) {
+            alert('Fill all fields correctly before generating a test')
+        } 
+        else{
+            this.isTestProgressModalVisible = true;
+        }
     },
-    onChangeStock(){
-        console.log('Stock selected: ', this.selectedStock);
-    },
-    submit() {
+    closeModal() {
+      this.isTestProgressModalVisible = false;
     }
   },
   validations: {
