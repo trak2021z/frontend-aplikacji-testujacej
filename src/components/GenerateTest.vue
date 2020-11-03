@@ -28,8 +28,8 @@
              :class="{'is-invalid':$v.edt_users.$error, 'is-valid':!$v.edt_users.$invalid }">
             <div class="invalid-feedback">
                 <span v-if="!$v.edt_users.required">User Amount is required</span>
+                <span v-else-if="!$v.edt_users.minValue">User Amount must be a positive number</span>
                 <span v-else-if="!$v.edt_users.numeric">User Amount must be a numeric value</span>
-                <span v-if="!$v.edt_users.minValue">User Amount must be a positive number</span>
             </div>
           </div><br>
           <div class="row">
@@ -40,8 +40,8 @@
              :class="{'is-invalid':$v.edt_queries.$error, 'is-valid':!$v.edt_queries.$invalid }">
             <div class="invalid-feedback">
                 <span v-if="!$v.edt_queries.required">Test Queries are required</span>
-                <span v-else-if="!$v.edt_queries.numeric">Test Queries amount must be numeric value</span>
-                <span v-if="!$v.edt_queries.minValue">Test Queries amount must be a positive number</span>
+                <span v-else-if="!$v.edt_queries.minValue">Test Queries amount must be a positive number</span>
+                <span v-else-if="!$v.edt_queries.numeric">Test Queries amount must be a numeric value</span>
             </div>
           </div><br>
           <div class="row">
