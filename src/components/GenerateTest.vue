@@ -1,7 +1,7 @@
 <template>
     <div class="main-container">
     <div class="main-table">
-      <h2>Generate test</h2>
+      <h2>Generate Test</h2>
 
      <loading :active.sync="isComputing" :is-full-page="false"/>
       <template v-if="false">
