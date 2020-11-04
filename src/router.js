@@ -3,6 +3,7 @@ import Router from "vue-router";
 import TestScenarios from "@/components/TestScenarios";
 import DoneTests from "@/components/DoneTests";
 import TestResults from "@/components/TestResults";
+import GenerateTest from "@/components/GenerateTest";
 
 Vue.use(Router);
 
@@ -28,6 +29,11 @@ const router = new Router({
             path: '/test/done/:id',
             name: 'testResults',
             component: TestResults,
+        },
+        {
+            path: '/test/generate/',
+            name: 'generateTest',
+            component: GenerateTest,
         },
         {
             path: '*',
