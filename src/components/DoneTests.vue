@@ -24,14 +24,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(test, index) in pageOfDoneTests" :key="test.pk">
+            <tr v-for="(doneTest, index) in pageOfDoneTests" :key="doneTest.pk">
               <td>{{ currentPageFirstIndex + index }}</td>
-              <td>{{ test.name }}</td>
-              <td>{{ test.num_users }}</td>
-              <td>{{ test.start_date }}</td>
-              <td>{{ test.end_date }}</td>
+              <td>{{ doneTest.test.name }}</td>
+              <td>{{ doneTest.num_users }}</td>
+              <td>{{ doneTest.start_date }}</td>
+              <td>{{ doneTest.end_date }}</td>
               <td>
-                <router-link v-if="test.is_finished" :to="'/test/done/' + 1">
+                <router-link v-if="doneTest.is_finished" :to="'/test/done/' + doneTest.pk">
                   <font-awesome-icon icon="chart-line" title="Show test results"/>
                 </router-link>
                 <font-awesome-icon v-else icon="hourglass-half" title="Test still in process..."/>
@@ -54,149 +54,14 @@
 
 <script>
 import Paginator from "@/components/Paginator";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "DoneTests",
   components: {Paginator},
+  computed: mapGetters(["allDoneTests"]),
   data() {
     return {
-      allDoneTests: [
-        {
-          pk: "1",
-          name: "testName",
-          description: "testDescription",
-          num_users: "5",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: false
-        },
-        {
-          pk: "2",
-          name: "testName",
-          description: "testDescription",
-          num_users: "4",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: false
-        },
-        {
-          pk: "3",
-          name: "testName",
-          description: "testDescription",
-          num_users: "21",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "4",
-          name: "testName",
-          description: "testDescription",
-          num_users: "1",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "5",
-          name: "testName",
-          description: "testDescription",
-          num_users: "11",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "6",
-          name: "testName",
-          description: "testDescription",
-          num_users: "8",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "7",
-          name: "testName",
-          description: "testDescription",
-          num_users: "9",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "8",
-          name: "testName",
-          description: "testDescription",
-          num_users: "3",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "9",
-          name: "testName",
-          description: "testDescription",
-          num_users: "12",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "10",
-          name: "testName",
-          description: "testDescription",
-          num_users: "20",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "11",
-          name: "testName",
-          description: "testDescription",
-          num_users: "8",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "12",
-          name: "testName",
-          description: "testDescription",
-          num_users: "4",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "13",
-          name: "testName",
-          description: "testDescription",
-          num_users: "2",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "14",
-          name: "testName",
-          description: "testDescription",
-          num_users: "7",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-        {
-          pk: "15",
-          name: "testName",
-          description: "testDescription",
-          num_users: "9",
-          start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15",
-          is_finished: true
-        },
-      ],
       isTestScenarioModalVisible: false,
       isComputing: false,
       pageOfDoneTests: null,
@@ -206,11 +71,167 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["getDoneTests"]),
     onChangePage(pageOfItems, page, currentPageFirstIndex){
       this.currentPage = page;
       this.pageOfDoneTests = pageOfItems;
       this.currentPageFirstIndex = currentPageFirstIndex;
     },
+  },
+  async created() {
+    this.isComputing = true;
+    try {
+      let response = await this.getDoneTests();
+      if(response.status !== 200){
+        alert(`${response.status}: ${response.data.error}`);
+      } else {
+        setInterval((function (){
+          this.getDoneTests();
+          this.paginatorKey += 1;
+        }), 1000 * 60);
+      }
+    }catch(e){
+      console.log(e);
+    }
+    this.isComputing = false;
   }
 }
+
+// allDoneTests: [
+//   {
+//     pk: "1",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "5",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: false
+//   },
+//   {
+//     pk: "2",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "4",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: false
+//   },
+//   {
+//     pk: "3",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "21",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "4",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "1",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "5",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "11",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "6",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "8",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "7",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "9",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "8",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "3",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "9",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "12",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "10",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "20",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "11",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "8",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "12",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "4",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "13",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "2",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "14",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "7",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+//   {
+//     pk: "15",
+//     name: "testName",
+//     description: "testDescription",
+//     num_users: "9",
+//     start_date: "15.05.2020 17:47:31",
+//     end_date: "15.05.2020 19:41:15",
+//     is_finished: true
+//   },
+// ],
 </script>

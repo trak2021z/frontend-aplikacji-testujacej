@@ -7,8 +7,8 @@ const state = {
 }
 
 const actions = {
-    async getTestAction({commit}){
-        return axios.get( 'https://api.covid19api.com/country/poland/status/confirmed?from=2020-10-01T00:00:00Z&to=2020-10-31T00:00:00Z')
+    async getTestAction({commit}) {
+        return axios.get('https://api.covid19api.com/country/poland/status/confirmed?from=2020-10-01T00:00:00Z&to=2020-10-31T00:00:00Z')
             .then(response => {
                 commit('setTest', response.data)
                 return response
@@ -16,7 +16,17 @@ const actions = {
             .catch(error => {
                 return error.response
             });
-    }
+    },
+    async getDoneTests({commit}) {
+        return axios.get('test/result/')
+            .then(response => {
+                commit('setDoneTests', response.data)
+                return response
+            })
+            .catch(error => {
+                return error.response
+            });
+    },
 }
 
 const getters = {
