@@ -31,9 +31,10 @@
               <td>{{ test.start_date }}</td>
               <td>{{ test.end_date }}</td>
               <td>
-                <router-link :to="'/test/done/' + 1">
-                  <font-awesome-icon icon="chart-line"/>
+                <router-link v-if="test.is_finished" :to="'/test/done/' + 1">
+                  <font-awesome-icon icon="chart-line" title="Show test results"/>
                 </router-link>
+                <font-awesome-icon v-else icon="hourglass-half" title="Test still in process..."/>
               </td>
             </tr>
             </tbody>
@@ -43,7 +44,6 @@
         <paginator :items="allDoneTests"
                    :maxPages="4"
                    :initialPage="currentPage"
-                   :labels="customLabels"
                    :key="paginatorKey"
                    @changePage="onChangePage"
         />
@@ -60,12 +60,6 @@ export default {
   components: {Paginator},
   data() {
     return {
-      customLabels: {
-        first: '<<',
-        last: '>>',
-        previous: '<',
-        next: '>'
-      },
       allDoneTests: [
         {
           pk: "1",
@@ -73,7 +67,8 @@ export default {
           description: "testDescription",
           num_users: "5",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: false
         },
         {
           pk: "2",
@@ -81,7 +76,8 @@ export default {
           description: "testDescription",
           num_users: "4",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: false
         },
         {
           pk: "3",
@@ -89,7 +85,8 @@ export default {
           description: "testDescription",
           num_users: "21",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "4",
@@ -97,7 +94,8 @@ export default {
           description: "testDescription",
           num_users: "1",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "5",
@@ -105,7 +103,8 @@ export default {
           description: "testDescription",
           num_users: "11",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "6",
@@ -113,7 +112,8 @@ export default {
           description: "testDescription",
           num_users: "8",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "7",
@@ -121,7 +121,8 @@ export default {
           description: "testDescription",
           num_users: "9",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "8",
@@ -129,7 +130,8 @@ export default {
           description: "testDescription",
           num_users: "3",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "9",
@@ -137,7 +139,8 @@ export default {
           description: "testDescription",
           num_users: "12",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "10",
@@ -145,7 +148,8 @@ export default {
           description: "testDescription",
           num_users: "20",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "11",
@@ -153,7 +157,8 @@ export default {
           description: "testDescription",
           num_users: "8",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "12",
@@ -161,7 +166,8 @@ export default {
           description: "testDescription",
           num_users: "4",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "13",
@@ -169,7 +175,8 @@ export default {
           description: "testDescription",
           num_users: "2",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "14",
@@ -177,7 +184,8 @@ export default {
           description: "testDescription",
           num_users: "7",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
         {
           pk: "15",
@@ -185,7 +193,8 @@ export default {
           description: "testDescription",
           num_users: "9",
           start_date: "15.05.2020 17:47:31",
-          end_date: "15.05.2020 19:41:15"
+          end_date: "15.05.2020 19:41:15",
+          is_finished: true
         },
       ],
       isTestScenarioModalVisible: false,

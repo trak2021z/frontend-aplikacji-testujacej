@@ -42,7 +42,6 @@
         <paginator :items="tests"
                    :maxPages="4"
                    :initialPage="currentPage"
-                   :labels="customLabels"
                    :key="paginatorKey"
                    @changePage="onChangePage"
         />
@@ -61,12 +60,6 @@ export default {
   data() {
     return {
       testPk: 1,
-      customLabels: {
-        first: '<<',
-        last: '>>',
-        previous: '<',
-        next: '>'
-      },
       tests: [
         {
           pk: "1",
