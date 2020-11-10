@@ -10,16 +10,17 @@
           </button>
         </div>
 
+      <template v-if="testObj != null">
         <div class="modal-body mx-3">
             <table class="table table-borderless">
-                <tr>Test: testName with {{testUsers}} users calling {{testAmount}} queries is in progress</tr><br>
+                <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries is in progress</tr><br>
                 <tr>Please wait...</tr>
-                <tr><spinner small label="Small Spinner"></spinner></tr>
             </table>
             <div class="text-center">
                 <b-spinner variant="primary" label="Text Centered"></b-spinner>
             </div>
         </div>
+      </template>
 
         <div class="modal-footer d-flex justify-content-center">
           <button class="btn btn-success" disabled>Show Results</button>
@@ -56,7 +57,7 @@ export default {
       type: Boolean,
       required: true
     },
-    testPk: {
+    testObj: {
       required: true
     },
     testAmount:{
