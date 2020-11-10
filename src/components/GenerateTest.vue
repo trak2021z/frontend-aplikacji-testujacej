@@ -85,7 +85,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getAllTests"]),
+    ...mapActions(["getAllTests", "addTest"]),
     onChange(){},
     showModal() {
         this.$v.$touch();
@@ -93,7 +93,19 @@ export default {
             alert('Fill all fields correctly before generating a test')
         } 
         else{
-            this.isTestProgressModalVisible = true;
+            let par_id = this.tests[this.selectedTest].id;
+            let par_users = this.edt_users;
+            let par_queries = this.edt_queries;
+            let data = {testId: par_id, testUsers: par_users, testAmount: par_queries};
+            this.addTest(data).then(response => {
+              if(response.status === 200 || response.status === 201){
+                this.isTestProgressModalVisible = true;
+              } else {
+                alert(`${response.status}: ${response.data.error}`);
+              }
+              }).catch(error => {
+                  alert(`${error}`)
+              });
         }
     },
     closeModal() {
