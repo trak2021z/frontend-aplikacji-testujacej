@@ -5,13 +5,12 @@
       <h2>Test Scenarios</h2>
       <loading :active.sync="isComputing" :is-full-page="false"/>
 
-      <template v-if="false">
+      <template v-if="!getTests">
         <h3 v-if="!isComputing">Oops... something went wrong!</h3>
       </template>
 
       <template v-else>
         <test-scenario-modal :is-visible="isTestScenarioModalVisible" :test-pk="this.testPk" @hide="closeModal"/>
-
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
@@ -28,9 +27,9 @@
               <td>{{ currentPageFirstIndex + index }}</td>
               <td>{{ test.name }}</td>
               <td>{{ test.description }}</td>
-              <td>{{ test.stockAmount }}</td>
+              <td>{{ test.endpoints_count }}</td>
               <td>
-                <span style="cursor: pointer" @click="showBuySellModal(test.pk)">
+                <span style="cursor: pointer" @click="showBuySellModal(test.id)">
                   <font-awesome-icon icon="search-plus"/>
                 </span>
               </td>
@@ -39,7 +38,7 @@
           </table>
         </div>
         <hr>
-        <paginator :items="tests"
+        <paginator :items="this.getTests"
                    :maxPages="4"
                    :initialPage="currentPage"
                    :key="paginatorKey"
@@ -53,105 +52,17 @@
 <script>
 import TestScenarioModal from "@/components/TestScenarioModal";
 import Paginator from "@/components/Paginator";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "TestsScenarios",
   components: {Paginator, TestScenarioModal},
+  computed: {
+    ...mapGetters(["getTests"])
+  },
   data() {
     return {
-      testPk: 1,
-      tests: [
-        {
-          pk: "1",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "5",
-        },
-        {
-          pk: "2",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "4",
-        },
-        {
-          pk: "3",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "21",
-        },
-        {
-          pk: "4",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "1",
-        },
-        {
-          pk: "5",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "11",
-        },
-        {
-          pk: "6",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "8",
-        },
-        {
-          pk: "7",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "9",
-        },
-        {
-          pk: "8",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "3",
-        },
-        {
-          pk: "9",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "12",
-        },
-        {
-          pk: "10",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "20",
-        },
-        {
-          pk: "11",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "8",
-        },
-        {
-          pk: "12",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "4",
-        },
-        {
-          pk: "13",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "2",
-        },
-        {
-          pk: "14",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "7",
-        },
-        {
-          pk: "15",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "9",
-        },
-      ],
+      testPk: 5,
       isTestScenarioModalVisible: false,
       isComputing: false,
       pageOfTestScenarios: null,
@@ -161,6 +72,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["getAllTests"]),
     onChangePage(pageOfItems, page, currentPageFirstIndex){
       this.currentPage = page;
       this.pageOfTestScenarios = pageOfItems;
@@ -174,6 +86,18 @@ export default {
       this.isTestScenarioModalVisible = false;
       this.paginatorKey += 1;
     }
-  }
+  },
+  async created() {
+    this.isComputing = true;
+    try {
+      let response = await this.getAllTests();
+      if(response.status !== 200){
+        alert(`${response.status}: ${response.data.error}`);
+      }
+    }catch(e){
+      console.log(e);
+    }
+    this.isComputing = false;
+  },
 }
 </script>

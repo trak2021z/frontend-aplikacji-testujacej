@@ -9,6 +9,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+        {{getTestScenario}}
         <div class="modal-body mx-3">
           <test-tree-item
               class="item"
@@ -23,12 +24,16 @@
 <script>
 import jQuery from 'jquery';
 import TestTreeItem from "@/components/TestTreeItem";
+import {mapActions, mapGetters} from "vuex";
 
 window.$ = window.jQuery = jQuery;
 
 export default {
   name: "BuySellModal",
   components: {TestTreeItem},
+  computed: {
+    ...mapGetters(["getTestScenario"])
+  },
   data() {
     return {
       treeData: {
@@ -55,12 +60,25 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["getTestScenarioById"]),
     show() {
       jQuery('#modalTestScenario').modal()
     },
     hide() {
       this.$emit('hide');
       jQuery('#modalTestScenario').modal('hide');
+    },
+    async getNewScenario() {
+      this.isComputing = true;
+      try {
+        let response = await this.getTestScenarioById(this.testPk);
+        if(response.status !== 200){
+          alert(`${response.status}: ${response.data.error}`);
+        }
+      }catch(e){
+        console.log(e);
+      }
+      this.isComputing = false;
     }
   },
   props: {
@@ -73,11 +91,15 @@ export default {
     }
   },
   watch: {
-    isVisible: function(newVal) {
+    isVisible: async function(newVal) {
       if(newVal){
+        //await this.getNewScenario();
         this.show();
       }
     }
-  }
+  },
+  async created() {
+    //await this.getNewScenario();
+  },
 }
 </script>
