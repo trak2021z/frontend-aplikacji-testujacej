@@ -1,9 +1,14 @@
 import axios from 'axios';
+import authHeader from "@/stores/modules/auth-header";
+import moment from "moment";
+
+const dateFormat = "DD.MM.YYYY HH:mm:ss";
 
 const state = {
     test: null,
     testScenarios: null,
-    doneTests: null
+    doneTests: null,
+    doneTest: null
 }
 
 const actions = {
@@ -18,9 +23,19 @@ const actions = {
             });
     },
     async getDoneTests({commit}) {
-        return axios.get('test/result/')
+        return axios.get('test/result/', {headers: authHeader()})
             .then(response => {
                 commit('setDoneTests', response.data)
+                return response
+            })
+            .catch(error => {
+                return error.response
+            });
+    },
+    async getDoneTest({commit}, id) {
+        return axios.get(`test/call/${id}/details`, {headers: authHeader()})
+            .then(response => {
+                commit('setDoneTest', response.data)
                 return response
             })
             .catch(error => {
@@ -32,7 +47,8 @@ const actions = {
 const getters = {
     getTest: state => state.test,
     allTestScenarios: state => state.testScenarios,
-    allDoneTests: state => state.doneTests
+    allDoneTests: state => state.doneTests,
+    doneTest: state => state.doneTest
 }
 
 const mutations = {
@@ -43,7 +59,22 @@ const mutations = {
         state.testScenarios = testScenarios;
     },
     setDoneTests: (state, doneTests) => {
-        state.doneTests = doneTests;
+        var tests = doneTests.map(function (test){
+            return test.testCalls.map(function (testCall){
+                testCall.name = test.name;
+                testCall.start_date = new moment(testCall.start_date).format(dateFormat);
+                testCall.end_date = new moment(testCall.end_date).format(dateFormat);
+
+                return testCall;
+            });
+        });
+
+        state.doneTests = tests.flat();
+    },
+    setDoneTest: (state, doneTest) => {
+        doneTest.start_date = new moment(doneTest.start_date).format(dateFormat);
+        doneTest.end_date = new moment(doneTest.end_date).format(dateFormat);
+        state.doneTest = doneTest;
     }
 }
 export default {

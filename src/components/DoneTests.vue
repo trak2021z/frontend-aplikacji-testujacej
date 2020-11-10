@@ -24,14 +24,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(doneTest, index) in pageOfDoneTests" :key="doneTest.pk">
+            <tr v-for="(doneTest, index) in pageOfDoneTests" :key="doneTest.id">
               <td>{{ currentPageFirstIndex + index }}</td>
-              <td>{{ doneTest.test.name }}</td>
+              <td>{{doneTest.name}}</td>
               <td>{{ doneTest.num_users }}</td>
               <td>{{ doneTest.start_date }}</td>
               <td>{{ doneTest.end_date }}</td>
               <td>
-                <router-link v-if="doneTest.is_finished" :to="'/test/done/' + doneTest.pk">
+                <router-link v-if="doneTest.is_finished" :to="'/test/done/' + doneTest.id">
                   <font-awesome-icon icon="chart-line" title="Show test results"/>
                 </router-link>
                 <font-awesome-icon v-else icon="hourglass-half" title="Test still in process..."/>
@@ -85,10 +85,10 @@ export default {
       if(response.status !== 200){
         alert(`${response.status}: ${response.data.error}`);
       } else {
-        setInterval((function (){
-          this.getDoneTests();
-          this.paginatorKey += 1;
-        }), 1000 * 60);
+        // setInterval((function (){
+        //   this.getDoneTests();
+        //   this.paginatorKey += 1;
+        // }).bind(this), 1000 * 60);
       }
     }catch(e){
       console.log(e);
