@@ -4,20 +4,21 @@
       <h2>Generate Test</h2>
 
      <loading :active.sync="isComputing" :is-full-page="false"/>
-      <template v-if="false">
+     
+      <template v-if="!getTests">
         <h3 v-if="!isComputing">Oops... something went wrong!</h3>
       </template>
 
       <template v-else>
       <test-progress-modal :is-visible="isTestProgressModalVisible" 
-      :test-pk="this.testPk" :test-users="this.edt_users" :test-amount="this.edt_queries" @hide="closeModal"/>
+      :test-obj="this.tests[this.selectedTest]" :test-users="this.edt_users" :test-amount="this.edt_queries" @hide="closeModal"/>
 
       <form>
         <div class="form-group">
           <div class="row">
             <label for="sel_test_type">Test Type</label>
             <select name="sel_test_type" v-model="selectedTest" @change="onChange" class="browser-default custom-select">
-                <option v-for="(item, index) in tests" v-bind:value="index" :key="item.id"> {{ item.name }} </option>
+                <option v-for="(test, index) in this.tests=getTests" v-bind:value="index" :key="test.pk"> {{ test.name }} </option>
             </select>
           </div><br>
           <div class="row">
@@ -59,113 +60,32 @@
 <script>
 import {required, numeric, minValue} from "vuelidate/lib/validators";
 import TestProgressModal from "@/components/TestProgressModal";
+import {mapGetters, mapActions} from "vuex";
 
 export default {
     name: "GenerateTests",
+    computed: {
+    ...mapGetters(["getTests"])
+    },
     components: {TestProgressModal},
     data() {
     return {
-        testPk: 1,
+        testObj: null,
         isTestProgressModalVisible: false,
         selectedTest : 1,
         edt_users: null,
         edt_queries: null,
         isComputing: false,
-        tests: [
-        {
-          pk: "1",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "5",
-        },
-        {
-          pk: "2",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "4",
-        },
-        {
-          pk: "3",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "21",
-        },
-        {
-          pk: "4",
+        tests: {
+          pk: "0",
           name: "testName",
           description: "testDescription",
           stockAmount: "1",
         },
-        {
-          pk: "5",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "11",
-        },
-        {
-          pk: "6",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "8",
-        },
-        {
-          pk: "7",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "9",
-        },
-        {
-          pk: "8",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "3",
-        },
-        {
-          pk: "9",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "12",
-        },
-        {
-          pk: "10",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "20",
-        },
-        {
-          pk: "11",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "8",
-        },
-        {
-          pk: "12",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "4",
-        },
-        {
-          pk: "13",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "2",
-        },
-        {
-          pk: "14",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "7",
-        },
-        {
-          pk: "15",
-          name: "testName",
-          description: "testDescription",
-          stockAmount: "9",
-        },
-      ],
     }
   },
   methods: {
+    ...mapActions(["getAllTests"]),
     onChange(){},
     showModal() {
         this.$v.$touch();
@@ -179,6 +99,11 @@ export default {
     closeModal() {
       this.isTestProgressModalVisible = false;
     }
+  },
+  async created() {
+    this.isComputing = true;
+    await this.getAllTests();
+    this.isComputing = false;
   },
   validations: {
         edt_users:{
