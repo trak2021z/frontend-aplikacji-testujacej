@@ -1,8 +1,8 @@
 export default function authHeader() {
-    let token = localStorage.getItem('token');
+    let token = "CvjbjbqnCbyvohqnFrxfzhmlxnCbyvgrpuavxn";
 
     if (token) {
-        return { authorization: 'Bearer ' + token };
+        return { FRONT: token };
     } else {
         return {};
     }
