@@ -12,6 +12,7 @@
 
       <template v-if="testObj != null">
         <div class="modal-body mx-3">
+          <template v-if="testCallCompleted != true">
             <table class="table table-borderless">
                 <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries is in progress</tr><br>
                 <tr>Please wait...</tr>
@@ -19,12 +20,25 @@
             <div class="text-center">
                 <b-spinner variant="primary" label="Text Centered"></b-spinner>
             </div>
+            </template>
+            <template v-else>
+              <table class="table table-borderless">
+                <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries finished successfully.</tr><br>
+                <tr>Test completed, you can view the results by pressing a button below.</tr>
+            </table>
+            </template>
         </div>
       </template>
 
         <div class="modal-footer d-flex justify-content-center">
-          <button class="btn btn-success" disabled>Show Results</button>
+          <template v-if="testCallCompleted != true">
+            <button class="btn btn-success" disabled>Show Results</button>
+          </template>
+          <template v-else>
+            <button class="btn btn-success" @click="showResults()" >Show Results</button>
+          </template>
         </div>
+
       </div>
     </div>
   </div>
@@ -50,6 +64,9 @@ export default {
     hide() {
       this.$emit('hide');
       jQuery('#modalTestProgress').modal('hide');
+    },
+    showResults(){
+      alert('<< Test results will be here >>')
     }
   },
   props: {
@@ -65,6 +82,9 @@ export default {
     },
     testUsers:{
         required: true
+    },
+    testCallCompleted:{
+      required: true
     }
   },
   watch: {

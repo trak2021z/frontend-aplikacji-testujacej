@@ -11,7 +11,8 @@
 
       <template v-else>
       <test-progress-modal :is-visible="isTestProgressModalVisible" 
-      :test-obj="this.tests[this.selectedTest]" :test-users="this.edt_users" :test-amount="this.edt_queries" @hide="closeModal"/>
+      :test-call-completed="this.isTestCallCompleted" :test-obj="this.tests[this.selectedTest]" 
+      :test-users="this.edt_users" :test-amount="this.edt_queries" @hide="closeModal"/>
 
       <form>
         <div class="form-group">
