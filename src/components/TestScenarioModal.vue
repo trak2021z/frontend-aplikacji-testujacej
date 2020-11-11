@@ -113,8 +113,6 @@ export default {
         }
       });
 
-      console.log(arrayOfEndpoints);
-
       for (let i = 0; i < arrayOfEndpoints.length; i++) {
         let id = 9999;
         if (arrayOfEndpoints[i].Parent.length > 1) {
@@ -130,7 +128,6 @@ export default {
           return {"Id": e.Id, "Name": e.Name, "Parent": e.Parent.toString()}
       });
 
-      console.log(arrayOfEndpoints);
       let arrayOfEndpointsIds = [];
 
       arrayOfEndpointsIds = arrayOfEndpoints.map(function (e) {
@@ -158,7 +155,6 @@ export default {
       }
 
       this.treeData = this.buildHierarchy(arrayOfEndpoints);
-      console.log(this.treeData);
     },
     show() {
       jQuery('#modalTestScenario').modal()
