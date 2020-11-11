@@ -11,7 +11,7 @@
 
       <template v-else>
       <test-progress-modal :is-visible="isTestProgressModalVisible" 
-      :test-call-completed="this.isTestCallCompleted" :test-obj="this.tests[this.selectedTest]" 
+      :test-call-completed="this.isTestCallCompleted" :test-call-id="this.testCallId" :test-obj="this.tests[this.selectedTest]" 
       :test-users="this.edt_users" :test-amount="this.edt_queries" @hide="closeModal"/>
 
       <form>
@@ -84,7 +84,8 @@ export default {
           stockAmount: "1",
         },
         timer: 0,
-        isTestCallCompleted: false
+        isTestCallCompleted: false,
+        testCallId: 0
     }
   },
   methods: {
@@ -129,10 +130,8 @@ export default {
                           {
                             clearInterval(this.timer);
 
-                            this.isTestCallCompleted = true; // spinner powinien być ustawiony na tej fladze w stylu:
-                                                             // isTestCallCompleted == false -> pokaż spinner i przycisk ma byc disabled
-                                                             // isTestCallCompleted == true -> pokaż wiadomość o sukcesie i przycisk ma byc do klikniecia
-                                                             // url z zakonczonym testem to /test/done/{id} -> id to ten z response
+                            this.isTestCallCompleted = true;
+                            this.testCallId = id;
                           }
                         }
                       });
@@ -145,6 +144,7 @@ export default {
                 else
                 {
                   this.isTestCallCompleted = true;
+                  this.testCallId = id;
                 }
 
               } else {
@@ -156,8 +156,10 @@ export default {
         }
     },
     closeModal() {
+      clearInterval(this.timer);
       this.isTestProgressModalVisible = false;
       this.isTestCallCompleted = false;
+      this.testCallId = 0;
     }
   },
   async created() {

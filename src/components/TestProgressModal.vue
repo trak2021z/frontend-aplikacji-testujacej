@@ -24,7 +24,8 @@
             <template v-else>
               <table class="table table-borderless">
                 <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries finished successfully.</tr><br>
-                <tr>Test completed, you can view the results by pressing a button below.</tr>
+                <tr class="text-success">Test completed!</tr>
+                <tr>You can view the results by pressing a button below.</tr>
             </table>
             </template>
         </div>
@@ -35,7 +36,7 @@
             <button class="btn btn-success" disabled>Show Results</button>
           </template>
           <template v-else>
-            <button class="btn btn-success" @click="showResults()" >Show Results</button>
+            <a class="btn btn-success text-white" :href="'/test/done/'+testCallId">Show Results</a>
           </template>
         </div>
 
@@ -64,9 +65,6 @@ export default {
     hide() {
       this.$emit('hide');
       jQuery('#modalTestProgress').modal('hide');
-    },
-    showResults(){
-      alert('<< Test results will be here >>')
     }
   },
   props: {
@@ -84,6 +82,9 @@ export default {
         required: true
     },
     testCallCompleted:{
+      required: true
+    },
+    testCallId:{
       required: true
     }
   },
