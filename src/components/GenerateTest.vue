@@ -82,24 +82,70 @@ export default {
           description: "testDescription",
           stockAmount: "1",
         },
+        timer: 0,
+        isTestCallCompleted: false
     }
   },
   methods: {
-    ...mapActions(["getAllTests", "addTest"]),
+    ...mapActions(["getAllTests", "addTest", "getDoneTest"]),
     onChange(){},
     showModal() {
         this.$v.$touch();
         if (this.$v.$invalid) {
             alert('Fill all fields correctly before generating a test')
         } 
-        else{
+        else {
             let par_id = this.tests[this.selectedTest].id;
             let par_users = this.edt_users;
             let par_queries = this.edt_queries;
-            let data = {testId: par_id, testUsers: par_users, testAmount: par_queries};
+            let data = {
+              testId: par_id, 
+              testUsers: par_users, 
+              testAmount: par_queries
+            };
+            
+            
             this.addTest(data).then(response => {
               if(response.status === 200 || response.status === 201){
                 this.isTestProgressModalVisible = true;
+
+                let { id, is_finished } = response.data;
+
+                if (is_finished === false)
+                {
+                  try {
+                    this.timer = setInterval((function ()
+                    {
+                      this.getDoneTest(id).then(doneTestResponse => 
+                      {                       
+                        if(doneTestResponse.status !== 200)
+                        {
+                          alert(`${doneTestResponse.status}: ${doneTestResponse.data.error}`);
+                        } 
+                        else 
+                        {
+                          if(doneTestResponse.data.is_finished)
+                          {
+                            clearInterval(this.timer);
+
+                            this.isTestCallCompleted = true; // spinner powinien być ustawiony na tej fladze w stylu:
+                                                             // isTestCallCompleted == false -> pokaż spinner i przycisk ma byc disabled
+                                                             // isTestCallCompleted == true -> pokaż wiadomość o sukcesie i przycisk ma byc do klikniecia
+                                                             // url z zakonczonym testem to /test/done/{id} -> id to ten z response
+                          }
+                        }
+                      });
+                    }).bind(this), 10000)
+                  }
+                  catch(e){
+                    console.log(e);
+                  }
+                }
+                else
+                {
+                  this.isTestCallCompleted = true;
+                }
+
               } else {
                 alert(`${response.status}: ${response.data.error}`);
               }
@@ -110,6 +156,7 @@ export default {
     },
     closeModal() {
       this.isTestProgressModalVisible = false;
+      this.isTestCallCompleted = false;
     }
   },
   async created() {
