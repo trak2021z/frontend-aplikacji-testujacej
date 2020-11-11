@@ -8,7 +8,8 @@ const state = {
     test: null,
     testScenarios: null,
     doneTests: null,
-    doneTest: null
+    doneTest: null,
+    createTestResponse: null
 }
 
 const actions = {
@@ -42,13 +43,23 @@ const actions = {
                 return error.response
             });
     },
+    //POST
+    async addTest({ commit }, data) {
+        const response = await axios.post(`test/call/`, 
+        {test:data.testId, num_users:data.testUsers, max_calls:data.testAmount}, 
+        {headers: authHeader()});
+
+        commit('setCreateTestResponse', response.data)
+        return response;
+    },
 }
 
 const getters = {
     getTest: state => state.test,
     allTestScenarios: state => state.testScenarios,
     allDoneTests: state => state.doneTests,
-    doneTest: state => state.doneTest
+    doneTest: state => state.doneTest,
+    createTestResponse: state => state.createTestResponse
 }
 
 const mutations = {
@@ -75,6 +86,9 @@ const mutations = {
         doneTest.start_date = new moment(doneTest.start_date).format(dateFormat);
         doneTest.end_date = new moment(doneTest.end_date).format(dateFormat);
         state.doneTest = doneTest;
+    },
+    setCreateTestResponse: (state, createTestResponse) => {
+        state.createTestResponse = createTestResponse;
     }
 }
 export default {
