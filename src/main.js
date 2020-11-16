@@ -30,6 +30,9 @@ Vue.component('jw-pagination', JwPagination);
 Vue.component('loading', Loading);
 Vue.use(Chartkick.use(Chart));
 
+Chartkick.options = {
+  round: 2
+}
 
 new Vue({
   store,

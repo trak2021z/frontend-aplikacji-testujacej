@@ -10,17 +10,42 @@
 
       <template v-else>
         <div class="text-left">
-          <h2 class="text-left">Results of {{doneTest.test.name}}</h2><hr>
+          <h2 class="text-left">Results of {{doneTest.test.name}}</h2>
+          <hr>
           <h5>Start date: {{doneTest.start_date}}</h5>
           <h5>End date: {{doneTest.is_finished ? doneTest.end_date : "-"}}</h5>
           <h5>Duration: {{duration}}</h5>
+          <hr>
         </div>
 
         <h3 v-if="!doneTest.is_finished">This test hasn't been finished yet!</h3>
+        <h3 v-else-if="!testResults">Results for this test are unavailable!</h3>
 
         <template v-else>
-          <br/><h4 class="text-dark">Czy cała grupa L2 zasługuje na ocenę 5.0?</h4>
-          <pie-chart :data="[['Tak', 23], ['Oczywiście, że tak!', 51], ['Jakżeby inaczej?', 125]]" :download="true"></pie-chart>
+          <div class="row">
+            <div class="col-sm-6 py-1">
+              <select class="float-lg-left" v-model="selectedContainer" title="Choose container">
+                <option>All</option>
+                <option v-for="id in containerIds" :key="id">{{id}}</option>
+              </select><br>
+            </div>
+            <div class="col-sm-6 py-1">
+              <button class="float-lg-right btn btn-success" @click="toggleCharts" title="Toggle software/hardware charts">
+                View {{viewHardware ? "software" : "hardware"}} <font-awesome-icon icon="retweet"/>
+              </button><br>
+            </div>
+          </div>
+
+          <hardware-parameters v-show="viewHardware" :data="testResults" :displayed_container="selectedContainer"></hardware-parameters>
+          <software-parameters v-show="!viewHardware" :data="testResults" :displayed_container="selectedContainer"></software-parameters>
+
+          <div class="row">
+            <div class="col">
+              <button class="float-lg-right btn btn-success" @click="downloadJSON" :disabled="downloadDisabled" title="Toggle software/hardware charts">
+                Download JSON <font-awesome-icon icon="file-download"/>
+              </button>
+            </div>
+          </div>
         </template>
       </template>
 
@@ -31,13 +56,20 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import moment from 'moment';
+import SoftwareParameters from "@/components/SoftwareParameters";
+import HardwareParameters from "@/components/HardwareParameters";
 
 export default {
   name: "TestResults",
+  components: {HardwareParameters, SoftwareParameters},
   computed: {
     ...mapGetters(["doneTest"]),
     testResults: function () {
       return this.doneTest.results;
+    },
+    containerIds: function (){
+      return this.testResults.map(item => item.container_id)
+          .filter((value, index, self) => self.indexOf(value) === index)
     },
     duration: function () {
       const start_date = new moment(this.doneTest.start_date, this.dateFormat);
@@ -57,10 +89,40 @@ export default {
       timer: 0,
       seconds: 0,
       isComputing: false,
+      selectedContainer: "All",
+      viewHardware: false,
+      downloadDisabled: false
     }
   },
   methods: {
-    ...mapActions(["getDoneTest"])
+    ...mapActions(["getDoneTest", "downloadTestResults"]),
+    toggleCharts() {
+      this.viewHardware = !this.viewHardware;
+    },
+    async downloadJSON(){
+      this.downloadDisabled = true;
+      try {
+        let response = await this.downloadTestResults(this.$route.params.id);
+        if (response.status !== 200) {
+          alert(`${response.status}: ${response.data.error}`);
+        } else {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data], {type: "application/json"}));
+          var fileLink = document.createElement('a');
+
+          fileLink.href = fileURL;
+          fileLink.setAttribute('download', 'result.json');
+          document.body.appendChild(fileLink);
+
+          fileLink.click();
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      this.downloadDisabled = false;
+    },
+    beforeDestroy() {
+      clearInterval(this.timer);
+    }
   },
   async created() {
     this.isComputing = true;
@@ -82,9 +144,6 @@ export default {
     }
     this.isComputing = false;
   },
-  beforeDestroy() {
-    clearInterval(this.timer);
-  }
 }
 </script>
 

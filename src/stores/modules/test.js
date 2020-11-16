@@ -9,7 +9,8 @@ const state = {
     testScenarios: null,
     doneTests: null,
     doneTest: null,
-    createTestResponse: null
+    createTestResponse: null,
+    downloadResponse: null
 }
 
 const actions = {
@@ -52,6 +53,16 @@ const actions = {
         commit('setCreateTestResponse', response.data)
         return response;
     },
+    async downloadTestResults({commit}, id){
+        return axios.get(`test/call/${id}/json`, {headers: authHeader()})
+            .then(response => {
+                commit('setDownloadResponse', response.data)
+                return response
+            })
+            .catch(error => {
+                return error.response
+            });
+    }
 }
 
 const getters = {
@@ -59,7 +70,8 @@ const getters = {
     allTestScenarios: state => state.testScenarios,
     allDoneTests: state => state.doneTests,
     doneTest: state => state.doneTest,
-    createTestResponse: state => state.createTestResponse
+    createTestResponse: state => state.createTestResponse,
+    getDownloadResponse: state => state.downloadResponse
 }
 
 const mutations = {
@@ -89,6 +101,9 @@ const mutations = {
     },
     setCreateTestResponse: (state, createTestResponse) => {
         state.createTestResponse = createTestResponse;
+    },
+    setDownloadResponse: (state, downloadResponse) => {
+        state.downloadResponse = downloadResponse;
     }
 }
 export default {

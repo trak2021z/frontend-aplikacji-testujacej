@@ -13,6 +13,8 @@ import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { faFolder } from '@fortawesome/free-solid-svg-icons';
 import {faChartLine} from "@fortawesome/free-solid-svg-icons";
 import {faHourglassHalf} from "@fortawesome/free-solid-svg-icons";
+import {faRetweet} from "@fortawesome/free-solid-svg-icons";
+import {faFileDownload} from "@fortawesome/free-solid-svg-icons";
 
 library.add(faUserSecret);
 library.add(faSearchPlus);
@@ -26,5 +28,7 @@ library.add(faFolderOpen);
 library.add(faFolder);
 library.add(faChartLine);
 library.add(faHourglassHalf);
+library.add(faRetweet);
+library.add(faFileDownload);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
