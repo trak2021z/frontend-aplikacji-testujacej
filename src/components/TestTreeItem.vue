@@ -5,10 +5,10 @@
         :class="{bold: isFolder}"
         @click="toggle"
     >
-      {{ item.name }}
+      {{ item.value.Name }}
       <span v-if="isFolder">
-        <font-awesome-icon v-if="isOpen === true" icon="folder"/>
-        <font-awesome-icon v-if="isOpen !== true" icon="folder-open"/>
+        <font-awesome-icon v-if="isOpen !== true" icon="folder"/>
+        <font-awesome-icon v-if="isOpen === true" icon="folder-open"/>
       </span>
     </div>
     <ul v-show="isOpen" v-if="isFolder">

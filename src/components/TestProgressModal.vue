@@ -12,6 +12,7 @@
 
       <template v-if="testObj != null">
         <div class="modal-body mx-3">
+          <template v-if="testCallCompleted != true">
             <table class="table table-borderless">
                 <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries is in progress</tr><br>
                 <tr>Please wait...</tr>
@@ -19,12 +20,26 @@
             <div class="text-center">
                 <b-spinner variant="primary" label="Text Centered"></b-spinner>
             </div>
+            </template>
+            <template v-else>
+              <table class="table table-borderless">
+                <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries finished successfully.</tr><br>
+                <tr class="text-success">Test completed!</tr>
+                <tr>You can view the results by pressing a button below.</tr>
+            </table>
+            </template>
         </div>
       </template>
 
         <div class="modal-footer d-flex justify-content-center">
-          <button class="btn btn-success" disabled>Show Results</button>
+          <template v-if="testCallCompleted != true">
+            <button class="btn btn-success" disabled>Show Results</button>
+          </template>
+          <template v-else>
+            <a class="btn btn-success text-white" :href="'/test/done/'+testCallId">Show Results</a>
+          </template>
         </div>
+
       </div>
     </div>
   </div>
@@ -65,6 +80,12 @@ export default {
     },
     testUsers:{
         required: true
+    },
+    testCallCompleted:{
+      required: true
+    },
+    testCallId:{
+      required: true
     }
   },
   watch: {
