@@ -45,12 +45,16 @@ const actions = {
     },
     //POST
     async addTest({ commit }, data) {
-        const response = await axios.post(`test/call/`, 
+        return axios.post(`test/call/`,
         {test:data.testId, num_users:data.testUsers, max_calls:data.testAmount}, 
-        {headers: authHeader()});
-
-        commit('setCreateTestResponse', response.data)
-        return response;
+        {headers: authHeader()})
+            .then(response =>{
+                commit('setCreateTestResponse', response.data)
+                return response
+            })
+            .catch(error => {
+                return error.response
+            });
     },
 }
 
