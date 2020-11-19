@@ -6,7 +6,7 @@
     <template v-else>
       <div class="modal fade" id="modalTestScenario" tabindex="-1" role="dialog" aria-labelledby="buySellStockModal"
            aria-hidden="true" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog" role="document">
+        <div style="max-width: 600px" class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title w-100 font-weight-bold">Test Scenario Actions</h4>
@@ -47,29 +47,6 @@ export default {
       isComputing: null,
       treeData: null,
       arrayOfEndpointsIds: null,
-      /*
-      treeData: {
-        name: "Register",
-        children: [
-          {name: "Log in"},
-          {
-            name: "Buy Action",
-            children: [
-              {
-                name: "Sell Action",
-                children: [{name: "Log out"}, {name: "Log in"}]
-              },
-              {name: "Create Offer"},
-              {name: "Cancel Offer"},
-              {
-                name: "Create Offer",
-                children: [{name: "Check if Offer Changed Status"}, {name: "Log out"}]
-              }
-            ]
-          }
-        ]
-      }
-     */
     }
   },
   methods: {
@@ -78,7 +55,6 @@ export default {
 
       var roots = [], children = {};
 
-      // find the top level nodes and hash the children based on parent
       for (var i = 0, len = arry.length; i < len; ++i) {
         var item = arry[i],
             p = item.Parent,
@@ -87,7 +63,6 @@ export default {
         target.push({value: item});
       }
 
-      // function to recursively build the tree
       var findChildren = function (parent) {
         if (children[parent.value.Id]) {
           parent.children = children[parent.value.Id];
@@ -97,7 +72,6 @@ export default {
         }
       };
 
-      // enumerate through to handle the case where there are multiple roots
       for (i = 0, len = roots.length; i < len; ++i) {
         findChildren(roots[i]);
       }
@@ -125,7 +99,7 @@ export default {
       }
 
       arrayOfEndpoints = arrayOfEndpoints.map(function (e) {
-          return {"Id": e.Id, "Name": e.Name, "Parent": e.Parent.toString()}
+          return {"Id": e.Id, "Name": e.Name, "Parent": e.Parent.toString(), "Closed": false}
       });
 
       let arrayOfEndpointsIds = [];
@@ -195,7 +169,6 @@ export default {
     }
   },
   async created() {
-    //await this.getNewScenario();
   },
 }
 </script>

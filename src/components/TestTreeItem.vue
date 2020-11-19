@@ -1,5 +1,5 @@
 <template>
-  <li style="user-select: none">
+  <li style="user-select: none; list-style-type: none; text-align: left;">
     <div
         style="display:inline"
         :class="{bold: isFolder}"
@@ -7,11 +7,11 @@
     >
       {{ item.value.Name }}
       <span v-if="isFolder">
-        <font-awesome-icon v-if="isOpen !== true" icon="folder"/>
-        <font-awesome-icon v-if="isOpen === true" icon="folder-open"/>
+        <font-awesome-icon v-if="this.item.value.Closed !== true" icon="folder"/>
+        <font-awesome-icon v-if="this.item.value.Closed === true" icon="folder-open"/>
       </span>
     </div>
-    <ul v-show="isOpen" v-if="isFolder">
+    <ul style="padding-left: 5px" v-show="this.item.value.Closed" v-if="isFolder">
       <test-tree-item
           class="item"
           v-for="(child, index) in item.children"
@@ -47,7 +47,7 @@ export default {
   methods: {
     toggle: function () {
       if (this.isFolder) {
-        this.isOpen = !this.isOpen;
+        this.item.value.Closed = !this.item.value.Closed;
       }
     }
   }
