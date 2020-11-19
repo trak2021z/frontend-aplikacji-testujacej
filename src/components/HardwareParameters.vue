@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div v-if="results" class="container-fluid">
     <h3>Hardware parameters</h3><br>
 
     <template v-if="displayed_container === 'All'">
@@ -115,19 +115,8 @@
 <script>
 export default {
   name: "HardwareParameters",
-  props: ["data", "displayed_container"],
+  props: ["results", "displayed_container"],
   computed: {
-    results: function (){
-      return this.data.reduce((prev, cur) => {
-        if (!prev[cur['container_id']]) {
-          prev[cur['container_id']] = [];
-        }
-
-        prev[cur['container_id']].push(cur);
-
-        return prev;
-      }, {});
-    },
     CPUTimeUser: function (){
       return this.getArrayWithValues(this.results[this.displayed_container], 'cpu_time_spent_user')
     },
