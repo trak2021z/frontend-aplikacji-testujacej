@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div v-if="results" class="container-fluid">
     <h3>Hardware parameters</h3><br>
 
     <template v-if="displayed_container === 'All'">
@@ -52,6 +52,62 @@
           <pie-chart :data="getCPUTimePieChartData()" suffix=" ms"></pie-chart><br>
         </div>
       </div>
+
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Min</th>
+          <th scope="col">Max</th>
+          <th scope="col">Average</th>
+          <th scope="col">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th scope="row">CPU time spent on user tasks</th>
+          <td>{{parseFloat(Math.min(...CPUTimeUser).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(Math.max(...CPUTimeUser).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(avg(CPUTimeUser).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(total(CPUTimeUser).toFixed(precision))}}<i> ms</i></td>
+        </tr>
+        <tr>
+          <th scope="row">CPU time spent on system tasks</th>
+          <td>{{parseFloat(Math.min(...CPUTimeSystem).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(Math.max(...CPUTimeSystem).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(avg(CPUTimeSystem).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(total(CPUTimeSystem).toFixed(precision))}}<i> ms</i></td>
+        </tr>
+        <tr>
+          <th scope="row">CPU time spent idle</th>
+          <td>{{parseFloat(Math.min(...CPUTimeIdle).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(Math.max(...CPUTimeIdle).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(avg(CPUTimeIdle).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(total(CPUTimeIdle).toFixed(precision))}}<i> ms</i></td>
+        </tr>
+        <tr>
+          <th scope="row">CPU usage</th>
+          <td>{{parseFloat(Math.min(...CPUUsage).toFixed(precision))}}<i> %</i></td>
+          <td>{{parseFloat(Math.max(...CPUUsage).toFixed(precision))}}<i> %</i></td>
+          <td>{{parseFloat(avg(CPUUsage).toFixed(precision))}}<i> %</i></td>
+          <td>-</td>
+        </tr>
+        <tr v-if="showAggregatedUsage">
+          <th scope="row">CPU usage aggregated</th>
+          <td>{{parseFloat(Math.min(...CPUUsageAggregated).toFixed(precision))}}<i> %</i></td>
+          <td>{{parseFloat(Math.max(...CPUUsageAggregated).toFixed(precision))}}<i> %</i></td>
+          <td>{{parseFloat(avg(CPUUsageAggregated).toFixed(precision))}}<i> %</i></td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <th scope="row">Memory usage</th>
+          <td>{{parseFloat(Math.min(...memoryUsage).toFixed(precision))}}<i> %</i></td>
+          <td>{{parseFloat(Math.max(...memoryUsage).toFixed(precision))}}<i> %</i></td>
+          <td>{{parseFloat(avg(memoryUsage).toFixed(precision))}}<i> %</i></td>
+          <td>-</td>
+        </tr>
+        </tbody>
+      </table>
     </template>
   </div>
 </template>
@@ -59,18 +115,25 @@
 <script>
 export default {
   name: "HardwareParameters",
-  props: ["data", "displayed_container"],
+  props: ["results", "displayed_container"],
   computed: {
-    results: function (){
-      return this.data.reduce((prev, cur) => {
-        if (!prev[cur['container_id']]) {
-          prev[cur['container_id']] = [];
-        }
-
-        prev[cur['container_id']].push(cur);
-
-        return prev;
-      }, {});
+    CPUTimeUser: function (){
+      return this.getArrayWithValues(this.results[this.displayed_container], 'cpu_time_spent_user')
+    },
+    CPUTimeSystem: function (){
+      return this.getArrayWithValues(this.results[this.displayed_container], 'cpu_time_spent_system')
+    },
+    CPUTimeIdle: function (){
+      return this.getArrayWithValues(this.results[this.displayed_container], 'cpu_time_spent_idle')
+    },
+    CPUUsage: function (){
+      return this.getArrayWithValues(this.results[this.displayed_container], 'cpu_usage_current', 'usage')
+    },
+    CPUUsageAggregated: function (){
+      return this.getArrayWithValues(this.results[this.displayed_container], 'cpu_usage_aggregated', 'usage')
+    },
+    memoryUsage: function (){
+      return this.getArrayWithValues(this.results[this.displayed_container], 'memory_usage')
     },
     showAggregatedUsage: function (){
       return Object.keys(this.results).includes('cpu_usage_aggregated');

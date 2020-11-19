@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid table-responsive">
+  <div v-if="results" class="container-fluid table-responsive">
     <h3>Software parameters</h3><br>
 
     <template v-if="displayed_container === 'All'">
@@ -34,6 +34,8 @@
         <thead>
         <tr>
           <th scope="col"></th>
+          <th scope="col">Min</th>
+          <th scope="col">Max</th>
           <th scope="col">Average</th>
           <th scope="col">Total</th>
         </tr>
@@ -41,18 +43,24 @@
         <tbody>
         <tr>
           <th scope="row">SQL queries</th>
-          <td>{{avg(sqlQueries).toFixed(precision)}}</td>
+          <td>{{Math.min(...sqlQueries)}}</td>
+          <td>{{Math.max(...sqlQueries)}}</td>
+          <td>{{parseFloat(avg(sqlQueries).toFixed(precision))}}</td>
           <td>{{total(sqlQueries)}}</td>
         </tr>
         <tr>
           <th scope="row">Time spent on SQL queries</th>
-          <td>{{avg(sqlQueriesTimes).toFixed(precision)}}<i>ms</i></td>
-          <td>{{total(sqlQueriesTimes).toFixed(precision)}}<i>ms</i></td>
+          <td>{{parseFloat(Math.min(...sqlQueriesTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(Math.max(...sqlQueriesTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(avg(sqlQueriesTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(total(sqlQueriesTimes).toFixed(precision))}}<i> ms</i></td>
         </tr>
         <tr>
           <th scope="row">View rendering time</th>
-          <td>{{avg(viewsTimes).toFixed(precision)}}<i>ms</i></td>
-          <td>{{total(viewsTimes).toFixed(precision)}}<i>ms</i></td>
+          <td>{{parseFloat(Math.min(...viewsTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(Math.max(...viewsTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(avg(viewsTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(total(viewsTimes).toFixed(precision))}}<i> ms</i></td>
         </tr>
         </tbody>
       </table>
@@ -63,32 +71,21 @@
 <script>
 export default {
   name: "SoftwareParameters",
-  props: ["data", "displayed_container"],
+  props: ["results", "displayed_container"],
   data(){
     return{
       precision: 3,
     }
   },
   computed: {
-    results: function (){
-      return this.data.reduce((prev, cur) => {
-        if (!prev[cur['container_id']]) {
-          prev[cur['container_id']] = [];
-        }
-
-        prev[cur['container_id']].push(cur);
-
-        return prev;
-      }, {});
-    },
     sqlQueries: function (){
-      return this.getArrayWithValues(this.results[this.displayed_container], "num_sql_queries")
+      return this.getArrayWithValues(this.results[this.displayed_container], "num_sql_queries");
     },
     sqlQueriesTimes: function (){
-      return this.getArrayWithValues(this.results[this.displayed_container], "time_spent_on_sql_queries")
+      return this.getArrayWithValues(this.results[this.displayed_container], "time_spent_on_sql_queries");
     },
     viewsTimes: function (){
-      return this.getArrayWithValues(this.results[this.displayed_container], "time_taken")
+      return this.getArrayWithValues(this.results[this.displayed_container], "time_taken");
     },
   },
   methods: {

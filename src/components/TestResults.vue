@@ -20,13 +20,12 @@
 
         <h3 v-if="!doneTest.is_finished">This test hasn't been finished yet!</h3>
         <h3 v-else-if="!testResults">Results for this test are unavailable!</h3>
-
         <template v-else>
           <div class="row">
             <div class="col-sm-6 py-1">
               <select class="float-lg-left" v-model="selectedContainer" title="Choose container">
                 <option>All</option>
-                <option v-for="id in containerIds" :key="id">{{id}}</option>
+                <option v-for="id in Object.keys(this.testResults)" :key="id">{{id}}</option>
               </select><br>
             </div>
             <div class="col-sm-6 py-1">
@@ -36,8 +35,8 @@
             </div>
           </div>
 
-          <hardware-parameters v-show="viewHardware" :data="testResults" :displayed_container="selectedContainer"></hardware-parameters>
-          <software-parameters v-show="!viewHardware" :data="testResults" :displayed_container="selectedContainer"></software-parameters>
+          <hardware-parameters v-show="viewHardware" :results="testResults" :displayed_container="selectedContainer"></hardware-parameters>
+          <software-parameters v-show="!viewHardware" :results="testResults" :displayed_container="selectedContainer"></software-parameters>
 
           <div class="row">
             <div class="col">
@@ -65,11 +64,17 @@ export default {
   computed: {
     ...mapGetters(["doneTest"]),
     testResults: function () {
-      return this.doneTest.results;
-    },
-    containerIds: function (){
-      return this.testResults.map(item => item.container_id)
-          .filter((value, index, self) => self.indexOf(value) === index)
+      const results = this.doneTest.results.flat();
+
+      return results.reduce((prev, cur) => {
+        if (!prev[cur['container_id']]) {
+          prev[cur['container_id']] = [];
+        }
+
+        prev[cur['container_id']].push(cur);
+
+        return prev;
+      }, {});
     },
     duration: function () {
       const start_date = new moment(this.doneTest.start_date, this.dateFormat);
