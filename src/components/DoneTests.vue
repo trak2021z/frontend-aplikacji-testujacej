@@ -29,7 +29,7 @@
               <td>{{doneTest.name}}</td>
               <td>{{ doneTest.num_users }}</td>
               <td>{{ doneTest.start_date }}</td>
-              <td>{{ doneTest.end_date }}</td>
+              <td>{{ doneTest.is_finished ? doneTest.end_date : "-" }}</td>
               <td>
                 <router-link v-if="doneTest.is_finished" :to="'/test/done/' + doneTest.id">
                   <font-awesome-icon icon="chart-line" title="Show test results"/>

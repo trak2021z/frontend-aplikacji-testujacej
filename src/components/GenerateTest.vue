@@ -24,7 +24,7 @@
           </div><br>
           <div class="row">
             <label v-if="edt_users != null" for="edt_users">User Amount</label>
-            <input type="number" name="edt_users" v-model="edt_users" @change="onChange" min="1" step="1"
+            <input type="number" name="edt_users" v-model="edt_users" @change="onChange" min="1" step="1" max="10"
              value=null class="form-control" placeholder="User Amount"
              v-model.trim="$v.edt_users.$model"
              :class="{'is-invalid':$v.edt_users.$error, 'is-valid':!$v.edt_users.$invalid }">
@@ -32,6 +32,7 @@
                 <span v-if="!$v.edt_users.required">User Amount is required</span>
                 <span v-else-if="!$v.edt_users.minValue">User Amount must be a positive number</span>
                 <span v-else-if="!$v.edt_users.numeric">User Amount must be a numeric value</span>
+                <span v-else-if="!$v.edt_users.maxValue">User Amount must not exceed 10</span>
             </div>
           </div><br>
           <div class="row">
@@ -59,7 +60,7 @@
 </template>
 
 <script>
-import {required, numeric, minValue} from "vuelidate/lib/validators";
+import {required, numeric, minValue, maxValue} from "vuelidate/lib/validators";
 import TestProgressModal from "@/components/TestProgressModal";
 import {mapGetters, mapActions} from "vuex";
 
@@ -171,7 +172,8 @@ export default {
         edt_users:{
           required,
           numeric,
-          minValue: minValue(1)
+          minValue: minValue(1),
+          maxValue: maxValue(10)
         },
         edt_queries:{
           required,
