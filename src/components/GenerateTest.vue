@@ -24,7 +24,7 @@
           </div><br>
           <div class="row">
             <label v-if="edt_users != null" for="edt_users">User Amount</label>
-            <input type="number" name="edt_users" v-model="edt_users" @change="onChange" min="1" step="1" max="10"
+            <input type="number" name="edt_users" v-model="edt_users" @change="onChange" min="1" step="1" :max="maxUsers"
              value=null class="form-control" placeholder="User Amount"
              v-model.trim="$v.edt_users.$model"
              :class="{'is-invalid':$v.edt_users.$error, 'is-valid':!$v.edt_users.$invalid }">
@@ -32,7 +32,7 @@
                 <span v-if="!$v.edt_users.required">User Amount is required</span>
                 <span v-else-if="!$v.edt_users.minValue">User Amount must be a positive number</span>
                 <span v-else-if="!$v.edt_users.numeric">User Amount must be a numeric value</span>
-                <span v-else-if="!$v.edt_users.maxValue">User Amount must not exceed 10</span>
+                <span v-else-if="!$v.edt_users.maxValue">User Amount must not exceed {{maxUsers}}</span>
             </div>
           </div><br>
           <div class="row">
@@ -67,7 +67,7 @@ import {mapGetters, mapActions} from "vuex";
 export default {
     name: "GenerateTests",
     computed: {
-    ...mapGetters(["getTests"])
+    ...mapGetters(["getTests"]),
     },
     components: {TestProgressModal},
     data() {
@@ -86,7 +86,8 @@ export default {
         },
         timer: 0,
         isTestCallCompleted: false,
-        testCallId: 0
+        testCallId: 0,
+        maxUsers: process.env.VUE_APP_TEST_MAX_USERS
     }
   },
   methods: {
@@ -168,18 +169,20 @@ export default {
     await this.getAllTests();
     this.isComputing = false;
   },
-  validations: {
-        edt_users:{
-          required,
-          numeric,
-          minValue: minValue(1),
-          maxValue: maxValue(10)
-        },
-        edt_queries:{
-          required,
-          numeric,
-          minValue: minValue(1),
-        }
+  validations() {
+    return {
+      edt_users: {
+        required,
+        numeric,
+        minValue: minValue(1),
+        maxValue: maxValue(this.maxUsers)
+      },
+      edt_queries: {
+        required,
+        numeric,
+        minValue: minValue(1),
+      }
     }
+  }
 }
 </script> 

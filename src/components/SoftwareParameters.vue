@@ -34,6 +34,8 @@
         <thead>
         <tr>
           <th scope="col"></th>
+          <th scope="col">Min</th>
+          <th scope="col">Max</th>
           <th scope="col">Average</th>
           <th scope="col">Total</th>
         </tr>
@@ -41,18 +43,24 @@
         <tbody>
         <tr>
           <th scope="row">SQL queries</th>
-          <td>{{avg(sqlQueries).toFixed(precision)}}</td>
+          <td>{{Math.min(...sqlQueries)}}</td>
+          <td>{{Math.max(...sqlQueries)}}</td>
+          <td>{{parseFloat(avg(sqlQueries).toFixed(precision))}}</td>
           <td>{{total(sqlQueries)}}</td>
         </tr>
         <tr>
           <th scope="row">Time spent on SQL queries</th>
-          <td>{{avg(sqlQueriesTimes).toFixed(precision)}}<i> ms</i></td>
-          <td>{{total(sqlQueriesTimes).toFixed(precision)}}<i> ms</i></td>
+          <td>{{parseFloat(Math.min(...sqlQueriesTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(Math.max(...sqlQueriesTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(avg(sqlQueriesTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(total(sqlQueriesTimes).toFixed(precision))}}<i> ms</i></td>
         </tr>
         <tr>
           <th scope="row">View rendering time</th>
-          <td>{{avg(viewsTimes).toFixed(precision)}}<i> ms</i></td>
-          <td>{{total(viewsTimes).toFixed(precision)}}<i> ms</i></td>
+          <td>{{parseFloat(Math.min(...viewsTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(Math.max(...viewsTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(avg(viewsTimes).toFixed(precision))}}<i> ms</i></td>
+          <td>{{parseFloat(total(viewsTimes).toFixed(precision))}}<i> ms</i></td>
         </tr>
         </tbody>
       </table>
