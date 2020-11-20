@@ -64,7 +64,9 @@ export default {
   computed: {
     ...mapGetters(["doneTest"]),
     testResults: function () {
-      const results = this.doneTest.results.flat();
+      const results = this.doneTest.results.flat().filter(function (result) {
+        return result !== {}
+      });
 
       return results.reduce((prev, cur) => {
         if (!prev[cur['container_id']]) {
