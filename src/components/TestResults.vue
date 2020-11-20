@@ -13,12 +13,12 @@
           <h2 class="text-left">Results of {{doneTest.test.name}}</h2>
           <hr>
           <h5>Start date: {{startDate}}</h5>
-          <h5>End date: {{doneTest.is_finished ? endDate : "-"}}</h5>
+          <h5>End date: {{endDate ? endDate : "-"}}</h5>
           <h5>Duration: {{duration}}</h5>
           <hr>
         </div>
 
-        <h3 v-if="!doneTest.is_finished">This test hasn't been finished yet!</h3>
+        <h3 v-if="!testResults || testResults.length === 0">This test hasn't been finished yet!</h3>
         <h3 v-else-if="!testResults">Results for this test are unavailable!</h3>
         <template v-else>
           <div class="row">
