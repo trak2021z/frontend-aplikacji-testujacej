@@ -10,7 +10,8 @@
       </template>
 
       <template v-else>
-      <test-progress-modal :is-visible="isTestProgressModalVisible" 
+      <test-progress-modal :is-visible="isTestProgressModalVisible"
+      :test-results-size="this.testResultsSize"
       :test-call-completed="this.isTestCallCompleted" :test-call-id="this.testCallId" :test-obj="this.tests[this.selectedTest]" 
       :test-users="this.edt_users" :test-amount="this.edt_queries" @hide="closeModal"/>
 
@@ -86,6 +87,7 @@ export default {
         },
         timer: 0,
         isTestCallCompleted: false,
+        testResultsSize: 0,
         testCallId: 0,
         maxUsers: process.env.VUE_APP_TEST_MAX_USERS
     }
@@ -108,7 +110,7 @@ export default {
               testAmount: par_queries
             };
             
-            
+            this.testResultsSize = 0;
             this.addTest(data).then(response => {
               if(response.status === 200 || response.status === 201){
                 this.isTestProgressModalVisible = true;
@@ -135,6 +137,8 @@ export default {
                             this.isTestCallCompleted = true;
                             this.testCallId = id;
                           }
+
+                          this.testResultsSize = doneTestResponse.data.results.length;
                         }
                       });
                     }).bind(this), 10000)

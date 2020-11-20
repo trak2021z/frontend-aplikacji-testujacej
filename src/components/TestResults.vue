@@ -12,8 +12,8 @@
         <div class="text-left">
           <h2 class="text-left">Results of {{doneTest.test.name}}</h2>
           <hr>
-          <h5>Start date: {{doneTest.start_date}}</h5>
-          <h5>End date: {{doneTest.is_finished ? doneTest.end_date : "-"}}</h5>
+          <h5>Start date: {{startDate}}</h5>
+          <h5>End date: {{doneTest.is_finished ? endDate : "-"}}</h5>
           <h5>Duration: {{duration}}</h5>
           <hr>
         </div>
@@ -78,16 +78,23 @@ export default {
         return prev;
       }, {});
     },
+    startDate: function (){
+      return moment(this.doneTest.start_date).format(this.dateFormat);
+    },
+    endDate: function (){
+      return moment(this.doneTest.end_date).format(this.dateFormat);
+    },
     duration: function () {
-      const start_date = new moment(this.doneTest.start_date, this.dateFormat);
-      const end_date = this.doneTest.is_finished ? new moment(this.doneTest.end_date, this.dateFormat) : new moment();
+      const start_date = new moment(this.doneTest.start_date);
+      const end_date = this.doneTest.is_finished ? new moment(this.doneTest.end_date) : new moment();
       const duration = moment.duration(end_date.diff(start_date));
       const hours = Math.floor(duration.asHours()) < 10 ? "0"+Math.floor(duration.asHours()) : Math.floor(duration.asHours());
       const minutes = duration.minutes() < 10 ? "0" + duration.minutes() : duration.minutes();
       const seconds = duration.seconds() < 10 ? "0" + duration.seconds() : duration.seconds();
+      const milis = duration.milliseconds();
       this.seconds;
 
-      return `${hours}:${minutes}:${seconds}`
+      return `${hours}:${minutes}:${seconds}:${milis}`
     }
   },
   data(){
