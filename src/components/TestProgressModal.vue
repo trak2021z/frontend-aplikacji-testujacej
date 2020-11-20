@@ -32,7 +32,7 @@
       </template>
 
         <div class="modal-footer d-flex justify-content-center">
-          <template v-if="testCallCompleted != true || testResultsSize === testAmount">
+          <template v-if="testCallCompleted != true && testResultsSize != testAmount">
             <button class="btn btn-success" disabled>Show Results</button>
           </template>
           <template v-else>
