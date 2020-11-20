@@ -12,10 +12,10 @@
 
       <template v-if="testObj != null">
         <div class="modal-body mx-3">
-          <template v-if="testCallCompleted != true">
+          <template v-if="testCallCompleted != true && testResultsSize != testAmount">
             <table class="table table-borderless">
                 <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries is in progress</tr><br>
-                <tr>Please wait...</tr>
+                <tr>Please wait... {{testResultsSize}} / {{testAmount}}</tr>
             </table>
             <div class="text-center">
                 <b-spinner variant="primary" label="Text Centered"></b-spinner>
@@ -32,7 +32,7 @@
       </template>
 
         <div class="modal-footer d-flex justify-content-center">
-          <template v-if="testCallCompleted != true">
+          <template v-if="testCallCompleted != true || testResultsSize === testAmount">
             <button class="btn btn-success" disabled>Show Results</button>
           </template>
           <template v-else>
@@ -85,6 +85,9 @@ export default {
       required: true
     },
     testCallId:{
+      required: true
+    },
+    testResultsSize:{
       required: true
     }
   },
