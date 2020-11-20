@@ -137,6 +137,9 @@ export default {
                             this.isTestCallCompleted = true;
                             this.testCallId = id;
                           }
+                          if(doneTestResponse.data.results.length === this.testAmount){
+                            this.testCallId = id;
+                          }
 
                           this.testResultsSize = doneTestResponse.data.results.length;
                         }
