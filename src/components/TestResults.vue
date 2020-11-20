@@ -65,7 +65,7 @@ export default {
     ...mapGetters(["doneTest"]),
     testResults: function () {
       const results = this.doneTest.results.flat().filter(function (result) {
-        return result !== {}
+        return result.num_sql_queries !== undefined
       });
 
       return results.reduce((prev, cur) => {
