@@ -99,8 +99,8 @@ const mutations = {
         state.doneTests = tests.flat();
     },
     setDoneTest: (state, doneTest) => {
-        doneTest.start_date = new moment(doneTest.start_date).format(dateFormat);
-        doneTest.end_date = new moment(doneTest.end_date).format(dateFormat);
+        //doneTest.start_date = new moment(doneTest.start_date).format(dateFormat);
+        //doneTest.end_date = new moment(doneTest.end_date).format(dateFormat);
         state.doneTest = doneTest;
     },
     setCreateTestResponse: (state, createTestResponse) => {
