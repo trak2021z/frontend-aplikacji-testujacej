@@ -130,18 +130,15 @@ export default {
                         } 
                         else 
                         {
-                          if(doneTestResponse.data.is_finished)
+                          this.testResultsSize = doneTestResponse.data.results.length;
+
+                          if(doneTestResponse.data.is_finished || doneTestResponse.data.results.length === this.testAmount)
                           {
                             clearInterval(this.timer);
 
                             this.isTestCallCompleted = true;
                             this.testCallId = id;
                           }
-                          if(doneTestResponse.data.results.length === this.testAmount){
-                            this.testCallId = id;
-                          }
-
-                          this.testResultsSize = doneTestResponse.data.results.length;
                         }
                       });
                     }).bind(this), 10000)
