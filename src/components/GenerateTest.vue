@@ -135,9 +135,9 @@ export default {
                             clearInterval(this.timer);
 
                             this.isTestCallCompleted = true;
-                            this.testCallId = id;
                           }
 
+                          this.testCallId = id;
                           this.testResultsSize = doneTestResponse.data.results.length;
                         }
                       });
