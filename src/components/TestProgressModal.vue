@@ -24,7 +24,7 @@
             <template v-else>
               <table class="table table-borderless">
                 <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries finished successfully.</tr><br>
-                <tr class="text-success">Test completed!</tr>
+                <tr class="text-success">Test completed! {{testAmount}} / {{testAmount}}</tr>
                 <tr>You can view the results by pressing a button below.</tr>
             </table>
             </template>
