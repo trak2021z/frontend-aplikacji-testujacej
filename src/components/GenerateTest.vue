@@ -131,13 +131,13 @@ export default {
                         else 
                         {
                           this.testResultsSize = doneTestResponse.data.results.length;
+                          this.testCallId = id;
 
-                          if(doneTestResponse.data.is_finished || doneTestResponse.data.results.length === this.testAmount)
+                          if(doneTestResponse.data.is_finished || doneTestResponse.data.results.length === this.edt_queries)
                           {
                             clearInterval(this.timer);
 
                             this.isTestCallCompleted = true;
-                            this.testCallId = id;
                           }
                         }
                       });
