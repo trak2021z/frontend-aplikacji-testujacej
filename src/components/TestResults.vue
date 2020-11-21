@@ -18,19 +18,24 @@
           <hr>
         </div>
 
-        <h3 v-if="!doneTest.is_finished" class="text-danger">This test hasn't been finished yet!</h3>
-        <template v-if="Array.isArray(testResults) && testResults.length !== 0">
+        <h3 v-if="!doneTest.is_finished" class="bg-danger text-white">This test hasn't been finished yet!</h3>
+        <template v-if="isResultAvailable">
           <div class="row">
-            <div class="col-sm-6 py-1">
+            <div class="col-sm-4 py-1">
               <select class="float-lg-left" v-model="selectedContainer" title="Choose container">
                 <option>All</option>
                 <option v-for="id in Object.keys(this.testResults)" :key="id">{{id}}</option>
-              </select><br>
+              </select>
             </div>
-            <div class="col-sm-6 py-1">
-              <button class="float-lg-right btn btn-success" @click="toggleCharts" title="Toggle software/hardware charts">
-                View {{viewHardware ? "software" : "hardware"}} <font-awesome-icon icon="retweet"/>
-              </button><br>
+            <div class="col-sm-4 py-1">
+              <button class="btn btn-success" @click="toggleCharts" title="Toggle software/hardware charts">
+                View {{viewHardware ? "software" : "hardware"}} <font-awesome-icon icon="exchange-alt"/>
+              </button>
+            </div>
+            <div class="col-sm-4 py-1">
+              <button class="btn btn-primary float-sm-right" @click="refresh" title="Toggle software/hardware charts">
+                Refresh <font-awesome-icon icon="sync-alt"/>
+              </button>
             </div>
           </div>
 
@@ -78,6 +83,9 @@ export default {
         return prev;
       }, {});
     },
+    isResultAvailable: function (){
+      return Object.keys(this.testResults).length !== 0;
+    },
     startDate: function (){
       return moment(this.doneTest.start_date).format(this.dateFormat);
     },
@@ -105,7 +113,8 @@ export default {
       isComputing: false,
       selectedContainer: "All",
       viewHardware: false,
-      downloadDisabled: false
+      downloadDisabled: false,
+      refreshTimer: 0
     }
   },
   methods: {
@@ -134,8 +143,14 @@ export default {
       }
       this.downloadDisabled = false;
     },
-    beforeDestroy() {
-      clearInterval(this.timer);
+    async refresh(){
+      try {
+        let response = await this.getDoneTest(this.$route.params.id);
+        if(response.status !== 200)
+          alert(`${response.status}: ${response.data.error}`);
+      }catch(e){
+        console.log(e);
+      }
     }
   },
   async created() {
@@ -151,13 +166,20 @@ export default {
           } else {
             clearInterval(this.timer);
           }
-        }).bind(this), 1000)
+        }).bind(this), 1000);
+        this.refreshTimer = setInterval((function (){
+          this.refresh();
+        }).bind(this), 1000 * 60);
       }
     }catch(e){
       console.log(e);
     }
     this.isComputing = false;
   },
+  beforeDestroy() {
+    clearInterval(this.timer);
+    clearInterval(this.refreshTimer);
+  }
 }
 </script>
 

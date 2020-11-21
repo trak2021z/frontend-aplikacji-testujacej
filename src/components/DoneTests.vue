@@ -2,7 +2,20 @@
   <div class="main-container">
     <div class="vld-parent main-table">
 
-      <h2>Done Tests</h2>
+      <div class="row">
+        <div class="col-sm-4 py-1">
+
+        </div>
+        <div class="col-sm-4 py-1">
+          <h2>Done Tests</h2>
+        </div>
+        <div class="col-sm-4 py-1">
+          <button class="btn btn-primary float-sm-right" @click="refresh" title="Toggle software/hardware charts">
+            Refresh <font-awesome-icon icon="sync-alt"/>
+          </button>
+        </div>
+      </div>
+
       <loading :active.sync="isComputing" :is-full-page="false"/>
 
       <template v-if="!allDoneTests">
@@ -86,6 +99,15 @@ export default {
     },
     incrementPaginatorKey(){
       this.paginatorKey += 1;
+    },
+    async refresh(){
+      try {
+        let response = await this.getDoneTests();
+        if(response.status !== 200)
+          alert(`${response.status}: ${response.data.error}`);
+      }catch(e){
+        console.log(e);
+      }
     }
   },
   async created() {
@@ -96,7 +118,7 @@ export default {
         alert(`${response.status}: ${response.data.error}`);
       } else {
         this.timer = setInterval((function (){
-          this.getDoneTests();
+          this.refresh();
         }).bind(this), 1000 * 60);
       }
     }catch(e){
