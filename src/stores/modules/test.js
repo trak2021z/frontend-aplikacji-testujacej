@@ -89,14 +89,16 @@ const mutations = {
         var tests = doneTests.map(function (test){
             return test.testCalls.map(function (testCall){
                 testCall.name = test.name;
-                testCall.start_date = new moment(testCall.start_date).format(dateFormat);
-                testCall.end_date = new moment(testCall.end_date).format(dateFormat);
 
                 return testCall;
             });
         });
 
-        state.doneTests = tests.flat();
+        state.doneTests = tests.flat().sort((a, b) => {return new Date(b.start_date) - new Date(a.start_date)}).map(function (testCall){
+                testCall.start_date = new moment(testCall.start_date).format(dateFormat);
+                testCall.end_date = new moment(testCall.end_date).format(dateFormat);
+                return testCall;
+                });
     },
     setDoneTest: (state, doneTest) => {
         //doneTest.start_date = new moment(doneTest.start_date).format(dateFormat);
