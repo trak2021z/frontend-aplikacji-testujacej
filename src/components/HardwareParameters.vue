@@ -116,6 +116,11 @@
 export default {
   name: "HardwareParameters",
   props: ["results", "displayed_container"],
+  data(){
+    return{
+      precision: 3,
+    }
+  },
   computed: {
     CPUTimeUser: function (){
       return this.getArrayWithValues(this.results[this.displayed_container], 'cpu_time_spent_user')

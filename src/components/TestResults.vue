@@ -13,14 +13,13 @@
           <h2 class="text-left">Results of {{doneTest.test.name}}</h2>
           <hr>
           <h5>Start date: {{startDate}}</h5>
-          <h5>End date: {{endDate ? endDate : "-"}}</h5>
+          <h5>End date: {{doneTest.is_finished ? endDate : "-"}}</h5>
           <h5>Duration: {{duration}}</h5>
           <hr>
         </div>
 
-        <h3 v-if="!testResults || testResults.length === 0">This test hasn't been finished yet!</h3>
-        <h3 v-else-if="!testResults">Results for this test are unavailable!</h3>
-        <template v-else>
+        <h3 v-if="!doneTest.is_finished" class="text-danger">This test hasn't been finished yet!</h3>
+        <template v-if="Array.isArray(testResults) && testResults.length !== 0">
           <div class="row">
             <div class="col-sm-6 py-1">
               <select class="float-lg-left" v-model="selectedContainer" title="Choose container">
@@ -46,6 +45,7 @@
             </div>
           </div>
         </template>
+        <h3 v-else>There are no results available.</h3>
       </template>
 
     </div>
@@ -88,7 +88,7 @@ export default {
       const start_date = new moment(this.doneTest.start_date);
       const end_date = this.doneTest.is_finished ? new moment(this.doneTest.end_date) : new moment();
       const duration = moment.duration(end_date.diff(start_date));
-      const hours = Math.floor(duration.asHours()) < 10 ? "0"+Math.floor(duration.asHours()) : Math.floor(duration.asHours());
+      const hours = Math.floor(duration.asHours()) < 10 ? "0" + Math.floor(duration.asHours()) : Math.floor(duration.asHours());
       const minutes = duration.minutes() < 10 ? "0" + duration.minutes() : duration.minutes();
       const seconds = duration.seconds() < 10 ? "0" + duration.seconds() : duration.seconds();
       const milis = duration.milliseconds();
@@ -120,8 +120,8 @@ export default {
         if (response.status !== 200) {
           alert(`${response.status}: ${response.data.error}`);
         } else {
-          var fileURL = window.URL.createObjectURL(new Blob([response.data], {type: "application/json"}));
-          var fileLink = document.createElement('a');
+          let fileURL = window.URL.createObjectURL(new Blob([response.data], {type: "application/json"}));
+          let fileLink = document.createElement('a');
 
           fileLink.href = fileURL;
           fileLink.setAttribute('download', 'result.json');
