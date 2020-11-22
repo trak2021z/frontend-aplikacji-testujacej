@@ -10,7 +10,8 @@ const state = {
     doneTests: null,
     doneTest: null,
     createTestResponse: null,
-    downloadResponse: null
+    downloadResponse: null,
+    downloadCsvResponse: null,
 }
 
 const actions = {
@@ -66,6 +67,16 @@ const actions = {
             .catch(error => {
                 return error.response
             });
+    },
+    async downloadCsvTestResults({commit}, id){
+        return axios.get(`test/call/${id}/csv`, {headers: authHeader()})
+            .then(response => {
+                commit('setCsvDownloadResponse', response.data)
+                return response
+            })
+            .catch(error => {
+                return error.response
+            });
     }
 }
 
@@ -75,7 +86,8 @@ const getters = {
     allDoneTests: state => state.doneTests,
     doneTest: state => state.doneTest,
     createTestResponse: state => state.createTestResponse,
-    getDownloadResponse: state => state.downloadResponse
+    getDownloadResponse: state => state.downloadResponse,
+    getCsvDownloadResponse: state => state.downloadResponse,
 }
 
 const mutations = {
@@ -110,7 +122,10 @@ const mutations = {
     },
     setDownloadResponse: (state, downloadResponse) => {
         state.downloadResponse = downloadResponse;
-    }
+    },
+    setCsvDownloadResponse: (state, downloadCsvResponse) => {
+        state.downloadCsvResponse = downloadCsvResponse;
+    },
 }
 export default {
     state,

@@ -15,7 +15,7 @@
           <template v-if="testCallCompleted != true && testResultsSize != testAmount">
             <table class="table table-borderless">
                 <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries is in progress</tr><br>
-                <tr>Please wait... {{testResultsSize}} / {{testAmount}}</tr>
+                <tr>Please wait...</tr>
             </table>
             <div class="text-center">
                 <b-spinner variant="primary" label="Text Centered"></b-spinner>

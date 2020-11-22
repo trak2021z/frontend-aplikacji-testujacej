@@ -92,7 +92,7 @@ export default {
         if (arrayOfEndpoints[i].Parent.length > 1) {
           for (let j = arrayOfEndpoints[i].Parent.length - 1; j > 0; j--) {
             let removedId = arrayOfEndpoints[i].Parent.splice(-1,1);
-            let object = {"Id": (id--).toString(), "Name": arrayOfEndpoints[i].Name, "Parent": [removedId]}
+            let object = {"Id": (id--).toString(), "Name": arrayOfEndpoints[i].Name, "Parent": [removedId]};
             arrayOfEndpoints.push(object);
           }
         }
@@ -120,10 +120,13 @@ export default {
             let parent = arrayOfEndpointsIds.indexOf(arrayOfEndpoints[j].Parent)
             if (parent === -1) {
               arrayOfEndpoints[j].Parent = "";
-            } else {
+            }
+            /*
+            else {
               arrayOfEndpoints[j].Parent = (parent + 1).toString();
             }
             arrayOfEndpoints[j].Id = (i + 1).toString();
+            */
           }
         }
       }
