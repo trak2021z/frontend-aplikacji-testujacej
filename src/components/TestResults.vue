@@ -44,6 +44,11 @@
 
           <div class="row">
             <div class="col">
+              <button class="float-lg-left btn btn-success" @click="downloadCSV" :disabled="downloadDisabled" title="Toggle software/hardware charts">
+                Download CSV <font-awesome-icon icon="file-download"/>
+              </button>
+            </div>
+            <div class="col">
               <button class="float-lg-right btn btn-success" @click="downloadJSON" :disabled="downloadDisabled" title="Toggle software/hardware charts">
                 Download JSON <font-awesome-icon icon="file-download"/>
               </button>
@@ -118,7 +123,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getDoneTest", "downloadTestResults"]),
+    ...mapActions(["getDoneTest", "downloadTestResults", "downloadCsvTestResults"]),
     toggleCharts() {
       this.viewHardware = !this.viewHardware;
     },
@@ -129,11 +134,32 @@ export default {
         if (response.status !== 200) {
           alert(`${response.status}: ${response.data.error}`);
         } else {
-          let fileURL = window.URL.createObjectURL(new Blob([response.data], {type: "application/json"}));
+          let fileURL = window.URL.createObjectURL(new Blob([JSON.stringify(response.data[0])], {type: "application/json"}));
           let fileLink = document.createElement('a');
 
           fileLink.href = fileURL;
           fileLink.setAttribute('download', 'result.json');
+          document.body.appendChild(fileLink);
+
+          fileLink.click();
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      this.downloadDisabled = false;
+    },
+    async downloadCSV (){
+      this.downloadDisabled = true;
+      try {
+        let response = await this.downloadCsvTestResults(this.$route.params.id);
+        if (response.status !== 200) {
+          alert(`${response.status}: ${response.data.error}`);
+        } else {
+          let fileURL = window.URL.createObjectURL(new Blob([response.data], {type: "application/csv"}));
+          let fileLink = document.createElement('a');
+
+          fileLink.href = fileURL;
+          fileLink.setAttribute('download', 'result.csv');
           document.body.appendChild(fileLink);
 
           fileLink.click();
