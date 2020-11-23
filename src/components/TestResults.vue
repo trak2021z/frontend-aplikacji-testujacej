@@ -195,7 +195,7 @@ export default {
         }).bind(this), 1000);
         this.refreshTimer = setInterval((function (){
           this.refresh();
-        }).bind(this), 1000 * 60);
+        }).bind(this), 1000 * 5);
       }
     }catch(e){
       console.log(e);
