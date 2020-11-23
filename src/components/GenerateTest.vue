@@ -54,7 +54,9 @@
             </template>
 
             <template v-else>
-              <label v-if="!isComputing" for="button">Another test is already running, please wait...</label>
+              <template v-if="this.allowATRmessage">
+                <label v-if="!isComputing" for="button">Another test is already running, please wait...</label>
+              </template>
               <input type="button" class="btn btn-success btn-lg btn-block" disabled value="Start Test"/>
             </template>
           </div>
