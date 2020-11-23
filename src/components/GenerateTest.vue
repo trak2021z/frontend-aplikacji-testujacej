@@ -112,6 +112,7 @@ export default {
               {
                 this.getDoneTests();
                 
+                if(this.allDoneTests.length == 0) this.isLastTestFinished = true;
                 this.isLastTestFinished = this.allDoneTests[0].is_finished;
                 if(this.isLastTestFinished == null) this.isLastTestFinished = true;
 
