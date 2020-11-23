@@ -134,7 +134,7 @@ export default {
         if (response.status !== 200) {
           alert(`${response.status}: ${response.data.error}`);
         } else {
-          let fileURL = window.URL.createObjectURL(new Blob([JSON.stringify(response.data[0])], {type: "application/json"}));
+          let fileURL = window.URL.createObjectURL(new Blob([JSON.stringify(response.data)], {type: "application/json"}));
           let fileLink = document.createElement('a');
 
           fileLink.href = fileURL;
