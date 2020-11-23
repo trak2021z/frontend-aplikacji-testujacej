@@ -71,6 +71,7 @@
 import {required, numeric, minValue, maxValue} from "vuelidate/lib/validators";
 import TestProgressModal from "@/components/TestProgressModal";
 import {mapGetters, mapActions} from "vuex";
+import router from "@/router";
 
 export default {
     name: "GenerateTests",
@@ -159,8 +160,9 @@ export default {
                         } 
                         else 
                         { 
-                                           
                           this.testCallId = id;
+
+                          router.replace('/test/done/' + this.testCallId)
 
                           if(doneTestResponse.data.is_finished)
                           {
