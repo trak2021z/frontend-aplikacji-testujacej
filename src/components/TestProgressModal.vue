@@ -15,7 +15,7 @@
           <template v-if="testCallCompleted != true && testResultsSize != testAmount">
             <table class="table table-borderless">
                 <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries is in progress</tr><br>
-                <tr>Please wait... {{testResultsSize}} / {{testAmount}}</tr>
+                <tr>Please wait...</tr>
             </table>
             <div class="text-center">
                 <b-spinner variant="primary" label="Text Centered"></b-spinner>
@@ -25,20 +25,20 @@
               <table class="table table-borderless">
                 <tr>Test: {{testObj.name}} with {{testUsers}} users calling {{testAmount}} queries finished successfully.</tr><br>
                 <tr class="text-success">Test completed! {{testAmount}} / {{testAmount}}</tr>
-                <tr>You can view the results by pressing a button below.</tr>
+                <!--<tr>You can view the results by pressing a button below.</tr>-->
             </table>
             </template>
         </div>
       </template>
 
-        <div class="modal-footer d-flex justify-content-center">
+        <!--<div class="modal-footer d-flex justify-content-center">
           <template v-if="testCallCompleted != true && testResultsSize != testAmount">
             <button class="btn btn-success" disabled>Show Results</button>
           </template>
           <template v-else>
             <a class="btn btn-success text-white" :href="'/test/done/'+testCallId">Show Results</a>
           </template>
-        </div>
+        </div>-->
 
       </div>
     </div>

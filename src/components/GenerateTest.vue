@@ -49,7 +49,16 @@
             </div>
           </div><br>
           <div class="row">
-            <input @click="showModal()" type="button" class="btn btn-success btn-lg btn-block" value="Start Test"/>
+            <template v-if="this.isLastTestFinished">
+              <input @click="showModal()" type="button" class="btn btn-success btn-lg btn-block" value="Start Test"/>
+            </template>
+
+            <template v-else>
+              <template v-if="this.allowATRmessage">
+                <label v-if="!isComputing" for="button">Another test is already running, please wait...</label>
+              </template>
+              <input type="button" class="btn btn-success btn-lg btn-block" disabled value="Start Test"/>
+            </template>
           </div>
         </div>
       </form>
@@ -64,11 +73,13 @@
 import {required, numeric, minValue, maxValue} from "vuelidate/lib/validators";
 import TestProgressModal from "@/components/TestProgressModal";
 import {mapGetters, mapActions} from "vuex";
+import router from "@/router";
+import jQuery from 'jquery';
 
 export default {
     name: "GenerateTests",
     computed: {
-    ...mapGetters(["getTests"]),
+    ...mapGetters(["getTests", "allDoneTests"]),
     },
     components: {TestProgressModal},
     data() {
@@ -79,6 +90,7 @@ export default {
         edt_users: null,
         edt_queries: null,
         isComputing: false,
+        allowATRmessage: false,
         tests: {
           pk: "0",
           name: "testName",
@@ -86,6 +98,8 @@ export default {
           stockAmount: "1",
         },
         timer: 0,
+        timerUT: 0,
+        isLastTestFinished: false,
         isTestCallCompleted: false,
         testResultsSize: 0,
         testCallId: 0,
@@ -93,8 +107,35 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getAllTests", "addTest", "getDoneTest"]),
+    ...mapActions(["getAllTests", "addTest", "getDoneTest", "getDoneTests"]),
     onChange(){},
+    checkForUnfinishedTests(){
+      if(this.isTestProgressModalVisible == false){
+        try {
+              this.timerUT = setInterval((function ()
+              {
+                this.getDoneTests();
+                
+                if(this.allDoneTests.length == 0){
+                  this.isLastTestFinished = true;
+                }
+                else{
+                  this.allowATRmessage = true;
+                  this.isLastTestFinished = this.allDoneTests[0].is_finished;
+                }
+              
+                if(this.isLastTestFinished == null) this.isLastTestFinished = true;
+
+              }).bind(this), 3000)
+        }
+        catch(e){
+          console.log(e);
+          this.isLastTestFinished = true;
+        }
+      }else if(this.isLastTestFinished == false){
+        this.isLastTestFinished = true;
+      }
+    },
     showModal() {
         this.$v.$touch();
         if (this.$v.$invalid) {
@@ -129,16 +170,21 @@ export default {
                           alert(`${doneTestResponse.status}: ${doneTestResponse.data.error}`);
                         } 
                         else 
-                        {
-                          this.testResultsSize = doneTestResponse.data.results.length;
+                        { 
                           this.testCallId = id;
+                          this.closeModal();
+                          clearInterval(this.timerUT);
+                          this.$emit('hide');
+                          jQuery('#modalTestProgress').modal('hide');
+                          router.replace('/test/done/' + this.testCallId)
 
-                          if(doneTestResponse.data.is_finished || doneTestResponse.data.results.length === this.edt_queries)
+                          if(doneTestResponse.data.is_finished)
                           {
                             clearInterval(this.timer);
 
                             this.isTestCallCompleted = true;
                           }
+
                         }
                       });
                     }).bind(this), 10000)
@@ -165,13 +211,15 @@ export default {
       clearInterval(this.timer);
       this.isTestProgressModalVisible = false;
       this.isTestCallCompleted = false;
-      this.testCallId = 0;
+      //this.testCallId = 0;
     }
   },
   async created() {
     this.isComputing = true;
     await this.getAllTests();
+    await this.getDoneTests();
     this.isComputing = false;
+    this.checkForUnfinishedTests();
   },
   validations() {
     return {
@@ -187,6 +235,9 @@ export default {
         minValue: minValue(1),
       }
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timerUT);
   }
 }
 </script> 
