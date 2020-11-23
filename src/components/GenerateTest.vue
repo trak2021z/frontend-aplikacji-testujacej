@@ -54,7 +54,9 @@
             </template>
 
             <template v-else>
-              <label v-if="!isComputing" for="button">Another test is already running, please wait...</label>
+              <template v-if="this.allowATRmessage">
+                <label v-if="!isComputing" for="button">Another test is already running, please wait...</label>
+              </template>
               <input type="button" class="btn btn-success btn-lg btn-block" disabled value="Start Test"/>
             </template>
           </div>
@@ -72,6 +74,7 @@ import {required, numeric, minValue, maxValue} from "vuelidate/lib/validators";
 import TestProgressModal from "@/components/TestProgressModal";
 import {mapGetters, mapActions} from "vuex";
 import router from "@/router";
+import jQuery from 'jquery';
 
 export default {
     name: "GenerateTests",
@@ -87,6 +90,7 @@ export default {
         edt_users: null,
         edt_queries: null,
         isComputing: false,
+        allowATRmessage: false,
         tests: {
           pk: "0",
           name: "testName",
@@ -112,8 +116,14 @@ export default {
               {
                 this.getDoneTests();
                 
-                if(this.allDoneTests.length == 0) this.isLastTestFinished = true;
-                this.isLastTestFinished = this.allDoneTests[0].is_finished;
+                if(this.allDoneTests.length == 0){
+                  this.isLastTestFinished = true;
+                }
+                else{
+                  this.allowATRmessage = true;
+                  this.isLastTestFinished = this.allDoneTests[0].is_finished;
+                }
+              
                 if(this.isLastTestFinished == null) this.isLastTestFinished = true;
 
               }).bind(this), 3000)
@@ -162,7 +172,10 @@ export default {
                         else 
                         { 
                           this.testCallId = id;
-
+                          this.closeModal();
+                          clearInterval(this.timerUT);
+                          this.$emit('hide');
+                          jQuery('#modalTestProgress').modal('hide');
                           router.replace('/test/done/' + this.testCallId)
 
                           if(doneTestResponse.data.is_finished)
@@ -171,6 +184,7 @@ export default {
 
                             this.isTestCallCompleted = true;
                           }
+
                         }
                       });
                     }).bind(this), 10000)
@@ -197,7 +211,7 @@ export default {
       clearInterval(this.timer);
       this.isTestProgressModalVisible = false;
       this.isTestCallCompleted = false;
-      this.testCallId = 0;
+      //this.testCallId = 0;
     }
   },
   async created() {
