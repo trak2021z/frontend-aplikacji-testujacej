@@ -49,7 +49,14 @@
             </div>
           </div><br>
           <div class="row">
-            <input @click="showModal()" type="button" class="btn btn-success btn-lg btn-block" value="Start Test"/>
+            <template v-if="this.isLastTestFinished">
+              <input @click="showModal()" type="button" class="btn btn-success btn-lg btn-block" value="Start Test"/>
+            </template>
+
+            <template v-else>
+              <label v-if="!isComputing" for="button">Another test is already running, please wait...</label>
+              <input type="button" class="btn btn-success btn-lg btn-block" disabled value="Start Test"/>
+            </template>
           </div>
         </div>
       </form>
@@ -68,7 +75,7 @@ import {mapGetters, mapActions} from "vuex";
 export default {
     name: "GenerateTests",
     computed: {
-    ...mapGetters(["getTests"]),
+    ...mapGetters(["getTests", "allDoneTests"]),
     },
     components: {TestProgressModal},
     data() {
@@ -86,6 +93,8 @@ export default {
           stockAmount: "1",
         },
         timer: 0,
+        timerUT: 0,
+        isLastTestFinished: false,
         isTestCallCompleted: false,
         testResultsSize: 0,
         testCallId: 0,
@@ -93,8 +102,28 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["getAllTests", "addTest", "getDoneTest"]),
+    ...mapActions(["getAllTests", "addTest", "getDoneTest", "getDoneTests"]),
     onChange(){},
+    checkForUnfinishedTests(){
+      if(this.isTestProgressModalVisible == false){
+        try {
+              this.timerUT = setInterval((function ()
+              {
+                this.getDoneTests();
+                
+                this.isLastTestFinished = this.allDoneTests[0].is_finished;
+                if(this.isLastTestFinished == null) this.isLastTestFinished = true;
+
+              }).bind(this), 3000)
+        }
+        catch(e){
+          console.log(e);
+          this.isLastTestFinished = true;
+        }
+      }else if(this.isLastTestFinished == false){
+        this.isLastTestFinished = true;
+      }
+    },
     showModal() {
         this.$v.$touch();
         if (this.$v.$invalid) {
@@ -131,8 +160,7 @@ export default {
                         else 
                         { 
                                            
-                            this.testCallId = id;
-                         
+                          this.testCallId = id;
 
                           if(doneTestResponse.data.is_finished)
                           {
@@ -172,7 +200,9 @@ export default {
   async created() {
     this.isComputing = true;
     await this.getAllTests();
+    await this.getDoneTests();
     this.isComputing = false;
+    this.checkForUnfinishedTests();
   },
   validations() {
     return {
@@ -188,6 +218,9 @@ export default {
         minValue: minValue(1),
       }
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timerUT);
   }
 }
 </script> 
