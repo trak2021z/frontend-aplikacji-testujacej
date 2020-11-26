@@ -15,6 +15,7 @@
           <h5>Start date: {{startDate}}</h5>
           <h5>End date: {{doneTest.is_finished ? endDate : "-"}}</h5>
           <h5>Duration: {{duration}}</h5>
+          <h5>Number of calls: {{doneTest.max_calls}}</h5>
           <hr>
         </div>
 

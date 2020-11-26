@@ -31,6 +31,7 @@
               <th scope="col">#</th>
               <th scope="col">Test Name</th>
               <th scope="col">Amount of Users</th>
+              <th scope="col">Calls</th>
               <th scope="col">Start Date</th>
               <th scope="col">End Date</th>
               <th scope="col">Results</th>
@@ -41,6 +42,7 @@
               <td>{{ currentPageFirstIndex + index }}</td>
               <td>{{doneTest.name}}</td>
               <td>{{ doneTest.num_users }}</td>
+              <td>{{ doneTest.max_calls }}</td>
               <td>{{ doneTest.start_date }}</td>
               <td>{{ doneTest.is_finished ? doneTest.end_date : "-" }}</td>
               <td>

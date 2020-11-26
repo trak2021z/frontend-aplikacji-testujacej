@@ -31,7 +31,8 @@ Vue.component('loading', Loading);
 Vue.use(Chartkick.use(Chart));
 
 Chartkick.options = {
-  round: 2
+  round: 2,
+  download: true
 }
 
 new Vue({
