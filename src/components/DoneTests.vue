@@ -46,10 +46,9 @@
               <td>{{ doneTest.start_date }}</td>
               <td>{{ doneTest.is_finished ? doneTest.end_date : "-" }}</td>
               <td>
-                <router-link v-if="Array.isArray(doneTest.results) && doneTest.results.length !==0" :to="'/test/done/' + doneTest.id">
+                <router-link :to="'/test/done/' + doneTest.id">
                   <font-awesome-icon icon="chart-line" title="Show test results"/>
                 </router-link>
-                <font-awesome-icon v-else icon="hourglass-half" title="Test still in process..."/>
               </td>
             </tr>
             </tbody>
