@@ -98,28 +98,11 @@ const mutations = {
         state.testScenarios = testScenarios;
     },
     setDoneTests: (state, doneTests) => {
-        
-        let tests = [];
-        doneTests.forEach(test => {
-            if(test != null && test.testCalls != null && test.testCalls.length > 0){
-                let testData = {
-                    name: test.name
-                }
-
-                test.testCalls.forEach(testCall => {
-                    testCall.start_date = new moment(testCall.start_date).format(dateFormat);
-                    testCall.end_date = new moment(testCall.end_date).format(dateFormat);
-                    tests.push({...testCall, ...testData});
-                });
-            }
+        doneTests.forEach(doneTest => {
+            doneTest.start_date = new moment(doneTest.start_date).format(dateFormat);
+            doneTest.end_date = new moment(doneTest.end_date).format(dateFormat);
         });
-
-        tests.sort(function(a,b) {
-            return (a.start_date < b.start_date) ? 1 : ((b.start_date < a.start_date) ? -1 : 0);
-        });
-
-        state.doneTests = tests;
-
+        state.doneTests = doneTests;
     },
     setDoneTest: (state, doneTest) => {
         //doneTest.start_date = new moment(doneTest.start_date).format(dateFormat);
