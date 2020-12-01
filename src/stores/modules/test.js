@@ -114,10 +114,9 @@ const mutations = {
             }
         });
 
-        tests.sort(function(a, b){
-            return b.start_date -a.start_date;
+        tests.sort(function(a,b) {
+            return (a.start_date < b.start_date) ? 1 : ((b.start_date < a.start_date) ? -1 : 0);
         });
-
 
         state.doneTests = tests;
 
