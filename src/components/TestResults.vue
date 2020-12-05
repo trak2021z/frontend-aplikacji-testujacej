@@ -75,20 +75,7 @@ export default {
   computed: {
     ...mapGetters(["doneTest"]),
     testResults: function () {
-      const results = Object.values(this.doneTest.results).flat().filter(function (result) {
-        if(result.num_sql_queries === undefined) console.warn('num_sql_queries is undefined')
-        return result.num_sql_queries !== undefined
-      });
-
-      return results.reduce((prev, cur) => {
-        if (!prev[cur['container_id']]) {
-          prev[cur['container_id']] = [];
-        }
-
-        prev[cur['container_id']].push(cur);
-
-        return prev;
-      }, {});
+      return this.doneTest.results;
     },
     isResultAvailable: function (){
       return Object.keys(this.testResults).length !== 0;
